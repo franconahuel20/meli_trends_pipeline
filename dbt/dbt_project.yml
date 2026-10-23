@@ -1,11 +1,20 @@
-name: 'meli_trends_analytics'
-version: '1.0.0'
+name: meli_trends_pipeline
+version: "1.0.0"
 config-version: 2
 
-profile: 'meli_trends_analytics'
+profile: meli_trends_pipeline
 
-model-paths: ['models']
+model-paths: ["models"]
+target-path: target
+clean-targets: ["target", "dbt_packages", "logs"]
+
+flags:
+  send_anonymous_usage_stats: false
+  use_colors: false
 
 models:
-  meli_trends_analytics:
+  meli_trends_pipeline:
     +materialized: table
+    +meta:
+      dagster:
+        group: analytics

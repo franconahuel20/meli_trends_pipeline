@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: stg_revenue_research_meli
+    description: "Staging layer written by the Dagster asset stg_revenue_research_meli/meli_trends_l3."
+    schema: stg_revenue_research_meli
+    tables:
+      - name: meli_trends_l3
+        description: "Trend keywords enriched with brand/character matches, one snapshot date per daily run."

@@ -2,15 +2,54 @@ version: 2
 
 models:
   - name: trends
-    description: "Final analytical table with Mercado Libre trends enriched with brand, character and franchise matching."
+    description: >
+      Final analytical table (mdm_revenue_research_meli.trends) used by Superset: one row per
+      trend keyword, subcategory and day, enriched with brand, character and franchise matches.
+      Incremental by date_dte, so history accumulates day after day.
     columns:
       - name: keyword_str
-        tests: [not_null]
+        description: "Keyword as returned by the Mercado Libre trends API."
+        data_tests:
+          - not_null
       - name: date_dte
-        tests: [not_null]
+        description: "Snapshot date (pipeline time zone)."
+        data_tests:
+          - not_null
+      - name: week_dte
+        description: "Monday of the snapshot week."
       - name: country_str
-        tests: [not_null]
+        data_tests:
+          - not_null
+      - name: brand_str
+        description: "Brand found in the keyword (precision-first matching)."
+      - name: character_str
+        description: "Character found in the keyword; franchise columns come from it."
       - name: branded_str
-        tests:
+        description: "'Branded' when a brand or a character was found."
+        data_tests:
+          - not_null
           - accepted_values:
-              values: ['Branded', 'Unbranded']
+              arguments:
+                values: ["Branded", "Unbranded"]
+      - name: has_brand_str
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["YES", "NO"]
+      - name: has_character_str
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["YES", "NO"]
+      - name: brand_match_method_str
+        description: "How the brand was matched: exact, compact (spacing) or fuzzy (one-letter typo)."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["exact", "compact", "fuzzy"]
+      - name: character_match_method_str
+        description: "How the character was matched: exact, compact, variant (singular/plural) or fuzzy."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["exact", "compact", "variant", "fuzzy"]

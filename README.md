@@ -1,729 +1,408 @@
-# Mercado Libre Trends Analytics Platform
+# meli_trends_pipeline
 
-## 1. Overview
+Mercado Libre search-trends pipeline. Every day it pulls the trending keywords of the
+selected Mercado Libre subcategories (Argentina, Brazil, Chile, Colombia and Mexico),
+stores them in a MinIO data lake, tags each keyword with the **brand** and **character /
+franchise** it mentions, builds the final analytical table with **dbt** and serves it to
+**Apache Superset**. **Dagster** orchestrates everything.
 
-This project implements a fully containerized analytics platform for Mercado Libre search trends. It extracts trends from the Mercado Libre API, stores raw files in MinIO, standardizes the data, applies fuzzy matching against brand and character reference tables in PostgreSQL, builds a final analytical model with dbt, and exposes the result in Apache Superset for dashboarding.
+One command starts the whole platform, on Ubuntu, Debian or Windows:
 
-The platform is designed around a professional data engineering workflow:
-
-```text
-PostgreSQL seed tables
-        ↓
-Airflow orchestration
-        ↓
-Mercado Libre API extraction
-        ↓
-MinIO L1 raw CSV
-        ↓
-MinIO L2 clean parquet
-        ↓
-MinIO L3 standardized parquet + PostgreSQL staging table
-        ↓
-dbt final analytical table
-        ↓
-Superset dashboards
+```bash
+docker compose up -d
 ```
-
-The main final table is:
-
-```text
-stg_revenue_research_meli.meli_trends_l3
-```
-
-This is the table that Superset should use for the visualizations.
 
 ---
 
-## 2. Stack
+## Contents
 
-The project uses the following mandatory components:
+1. [Architecture](#1-architecture)
+2. [Requirements](#2-requirements)
+3. [Quick start](#3-quick-start)
+4. [Services](#4-services)
+5. [Configuration](#5-configuration)
+6. [The Dagster pipeline](#6-the-dagster-pipeline)
+7. [Brand and character matching](#7-brand-and-character-matching)
+8. [Data model](#8-data-model)
+9. [Superset dashboards](#9-superset-dashboards)
+10. [Operations](#10-operations)
+11. [Troubleshooting](#11-troubleshooting)
+12. [Project structure](#12-project-structure)
 
-| Component | Purpose |
+---
+
+## 1. Architecture
+
+```text
+data/input/*.xlsx ──► PostgreSQL reference tables (brands, characters, subcategories)
+                                  │
+Mercado Libre API ──► L1  MinIO  raw CSV          L1_delta/revenue_research_meli/trends/
+   /trends/{site}/{category}      │
+                       L2  MinIO  clean parquet    L2_databases/.../date_dte=YYYY-MM-DD/
+                                  │
+                       L3  brand/character matching
+                           ├─► MinIO parquet       L3_standardization/.../date_dte=YYYY-MM-DD/
+                           └─► PostgreSQL          stg_revenue_research_meli.meli_trends_l3
+                                  │
+                       dbt (incremental)  ──► mdm_revenue_research_meli.trends ──► Superset
+```
+
+| Component | Role |
 |---|---|
-| PostgreSQL | Stores reference tables, staging tables and the final dbt model |
-| Apache Airflow | Orchestrates the end-to-end pipeline |
-| dbt | Builds the final analytical table |
-| Apache Superset | Visualizes the final model |
-| MinIO S3 | Stores L1, L2 and L3 data lake files |
-| Docker Compose | Runs the full stack locally |
+| Dagster 1.13 | Orchestration: assets, daily schedule, retries, lineage, run history (UI on port 3000) |
+| PostgreSQL 15 | Reference tables, staging table and final dbt model (database `snowflake_dev`) |
+| MinIO | S3-compatible data lake (L1 / L2 / L3) |
+| dbt 1.11 | Final analytical model with data tests (run by Dagster, tests shown as asset checks) |
+| Apache Superset 4.1 | Dashboards; the PostgreSQL connection is registered automatically |
+| Dozzle / Adminer | Container logs and a lightweight database browser |
 
----
+## 2. Requirements
 
-## 3. Project structure
+| | Ubuntu / Debian | Windows 10 / 11 |
+|---|---|---|
+| Docker | Docker Engine 24+ with the Compose v2 plugin (`docker compose`, not the old `docker-compose`) | Docker Desktop with the WSL 2 backend |
+| Memory | 4 GB free for containers (the stack uses about 1 GB idle) | Same; check *Settings → Resources* in Docker Desktop |
+| Disk | About 4 GB for images and data | Same |
 
-```text
-meli_trends_stack/
-├── dags/
-│   └── meli_trends_end_to_end.py
-├── data/
-│   └── input/
-│       ├── brands.xlsx
-│       ├── characters.xlsx
-│       └── mercado_libre_subcat.xlsx
-├── dbt/
-│   ├── dbt_project.yml
-│   ├── models/
-│   │   ├── schema.yml
-│   │   └── trends.sql
-│   └── profiles/
-│       └── profiles.yml
-├── docker/
-│   ├── airflow/
-│   │   ├── Dockerfile
-│   │   └── requirements.txt
-│   └── superset/
-│       └── Dockerfile
-├── scripts/
-│   └── init_postgres.sql
-├── docker-compose.yml
-├── superset
-├── LICENSE
-├── tests/
-│   ├── dags/
-│       ├── test_meli_trends_dag.py
-├── .env.example
-└── README.md
+Install Docker Engine from Docker's official repository (the distribution packages are often
+too old, and Debian does not ship Compose v2):
+
+```bash
+curl -fsSL https://get.docker.com | sh
 ```
 
----
+```bash
+sudo usermod -aG docker $USER
+```
 
-## 4. Environment configuration
+Log out and back in after the second command so `docker` works without `sudo`. Check the versions with:
 
-Create your local `.env` file:
+```bash
+docker compose version
+```
+
+You also need Mercado Libre API credentials (`client_id` and `client_secret` of an app created at
+<https://developers.mercadolibre.com>).
+
+## 3. Quick start
+
+**1. Get the code and create your `.env`**
+
+Linux:
 
 ```bash
 cp .env.example .env
 ```
 
-Then update the Mercado Libre secret:
+Windows (PowerShell):
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**2. Set your Mercado Libre credentials** in `.env`:
 
 ```env
-ML_GRANT_TYPE=client_credentials
-ML_CLIENT_ID=your_real_client_id_here
-ML_CLIENT_SECRET=your_real_secret_here
+ML_CLIENT_ID=your_client_id
+ML_CLIENT_SECRET=your_client_secret
 ```
 
-The project intentionally provides `.env.example` instead of hardcoding secrets in the repository. Do not commit `.env` to Git.
+Every other value has a working default. For anything beyond a local machine, also change
+`SUPERSET_SECRET_KEY` and the passwords.
 
----
-
-## 5. Running the full platform
-
-From the project root, run:
+**3. Start everything**
 
 ```bash
-docker compose up --build
+docker compose up -d
 ```
 
-When all services are ready:
+The first start builds two images (Dagster and Superset, a few minutes). Then:
 
-| Service | URL | Credentials |
+1. PostgreSQL, MinIO and the Dagster metadata database start and become healthy.
+2. The `meli-datalake` bucket is created.
+3. The Dagster code server, UI and daemon start.
+4. **The pipeline runs automatically once**, because the final table does not exist yet (the
+   `meli_trends_first_run_sensor`). It takes about two minutes.
+5. From then on it runs every day at 23:00, Buenos Aires time.
+
+Follow the run in Dagster (<http://localhost:3000>, *Runs*). When it finishes, the final table
+`mdm_revenue_research_meli.trends` is ready in Superset. Check the containers with:
+
+```bash
+docker compose ps
+```
+
+## 4. Services
+
+All ports are published on `127.0.0.1` only (see `HOST_BIND_IP`).
+
+| Service | URL | Credentials (defaults) |
 |---|---|---|
-| Airflow | http://localhost:8081 | admin / admin |
-| Superset | http://localhost:8088 | admin / admin |
-| MinIO Console | http://localhost:9001 | minioadmin / minioadmin |
-| PostgreSQL | localhost:5432 | postgres / postgres |
-
----
-
-## 6. Airflow DAG
-
-The main DAG is:
-
-```text
-meli_trends_end_to_end
-```
-
-It runs every day at:
-
-```text
-23:00 America/Argentina/Buenos_Aires
-```
-
-You can also trigger it manually from the Airflow UI.
-
-### DAG tasks
-
-| Task | Description |
-|---|---|
-| `load_excel_inputs_to_postgres` | Loads the three Excel files into PostgreSQL reference tables |
-| `get_meli_access_token` | Gets a Bearer access token from Mercado Libre |
-| `extract_meli_trends_to_l1` | Calls the trends endpoint and saves a CSV into MinIO L1 |
-| `transform_l1_to_l2` | Cleans and deduplicates raw data, then writes parquet into MinIO L2 |
-| `fuzzy_match_l2_to_l3` | Applies exact and fuzzy matching against brands and characters |
-| `run_dbt_models` | Runs dbt and creates the final analytical table |
-
----
-
-## 7. PostgreSQL schemas and tables
-
-The project creates the following schemas:
-
-```sql
-standardization_revenue_research_meli
-stg_revenue_research_meli
-mdm_revenue_research_meli
-```
-
-### Reference tables
-
-```sql
-standardization_revenue_research_meli.brands
-standardization_revenue_research_meli.characters
-standardization_revenue_research_meli.mercado_libre_subcat
-```
-
-### Staging table
-
-```sql
-stg_revenue_research_meli.meli_trends_l3
-```
-
-### Final table
-
-```sql
-stg_revenue_research_meli.meli_trends_l3
-```
-
----
-
-## 8. MinIO data lake layout
-
-The bucket is:
-
-```text
-meli-datalake
-```
-
-The data lake paths are:
-
-```text
-L1_delta/revenue_research_meli/trends/
-L2_databases/revenue_research_meli/trends/
-L3_standardization/revenue_research_meli/trends/
-```
-
-L1 contains CSV files with the format:
-
-```text
-mercado_libre_trends_ddmmyyyy.csv
-```
-
-L2 and L3 are stored as parquet files partitioned by date.
-
----
-
-## 9. Fuzzy matching logic
-
-The L3 task applies the following logic:
-
-1. Normalize keywords:
-   - lowercase
-   - remove accents
-   - remove punctuation
-   - trim duplicated spaces
-
-2. Match brands:
-   - exact word match
-   - fuzzy match with threshold 90
-
-3. Match characters:
-   - exact word match
-   - fuzzy match with threshold 85
-
-4. Enrich matched characters with:
-   - owner group
-   - TWDC flag
-   - franchise level 1
-   - franchise level 2
-   - franchise level 3
-   - content
-
-5. Generate analytical flags:
-   - `has_brand_str`
-   - `has_character_str`
-   - `has_franchise_n1_str`
-   - `has_franchise_n2_str`
-   - `has_franchise_n3_str`
-   - `branded_str`
-
----
-
-## 10. dbt model
-
-It creates the final table:
-
-```sql
-stg_revenue_research_meli.meli_trends_l3
-```
-
----
-
-## 11. Superset setup
-
-Open Superset:
-
-```text
-http://localhost:8088
-```
-
-Login:
-
-```text
-admin / admin
-```
-
-### Add PostgreSQL database
-
-Go to:
-
-```text
-Settings → Database Connections → + Database
-```
-
-Use this SQLAlchemy URI:
-
-```text
-postgresql+psycopg2://postgres:postgres@postgres:5432/snowflake_dev
-```
-
-Then create a dataset from:
-
-```text
-stg_revenue_research_meli.meli_trends_l3
-```
-
----
-
-## 12. Dashboard guide
-
-Create a dashboard named:
-
-```text
-Mercado Libre Trends Analytics
-```
-
-Use the dataset:
-
-```text
-mdm_revenue_research_meli.trends
-```
-
-### 12.1 Branded search trends by country
-
-Chart type:
-
-```text
-Line Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Time Column | `week_dte` |
-| Metric | `COUNT(*)` |
-| Dimension / Series | `country_str` |
-| Filter | `branded_str = 'Branded'` |
-| X Axis | `week_dte` |
-| Y Axis | count |
-
-Suggested title:
-
-```text
-Tendencias de búsquedas brandeadas por país
-```
-
----
-
-### 12.2 Share by company
-
-Chart type:
-
-```text
-Treemap
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `group_company_owner_rights_str` |
-| Metric | `COUNT(*)` |
-| Filter | `group_company_owner_rights_str IS NOT NULL` |
-
-Suggested title:
-
-```text
-Share por Compañía
-```
-
----
-
-### 12.3 Companies by country
-
-Chart type:
-
-```text
-Bar Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| X Axis | `country_str` |
-| Metric | `COUNT(*)` |
-| Series | `group_company_owner_rights_str` |
-| Filter | `group_company_owner_rights_str IS NOT NULL` |
-| Stack | enabled |
-
-Suggested title:
-
-```text
-Compañías por País
-```
-
----
-
-### 12.4 Franchise level 1 share
-
-Chart type:
-
-```text
-Pie Chart` or `Donut Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `franchise_n1_str` |
-| Metric | `COUNT(*)` |
-| Filter | `franchise_n1_str IS NOT NULL` |
-
-Suggested title:
-
-```text
-Franquicias Nivel 1
-```
-
----
-
-### 12.5 Franchise level 2 by country
-
-Chart type:
-
-```text
-Bar Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| X Axis | `country_str` |
-| Metric | `COUNT(*)` |
-| Series | `franchise_n2_str` |
-| Filter | `franchise_n2_str IS NOT NULL` |
-| Stack | enabled |
-
-Suggested title:
-
-```text
-Franquicias Nivel 2 por país
-```
-
----
-
-### 12.6 Top 10 branded trends in a category
-
-Chart type:
-
-```text
-Horizontal Bar Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `keyword_str` |
-| Metric | `COUNT(*)` |
-| Filter | `branded_str = 'Branded'` |
-| Sort | count descending |
-| Row limit | 10 |
-
-Suggested title:
-
-```text
-Top 10 de Tendencias Branded en la categoría
-```
-
----
-
-### 12.7 Top 20 characters
-
-Chart type:
-
-```text
-Word Cloud
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Text Column | `character_str` |
-| Metric | `COUNT(*)` |
-| Filter | `character_str IS NOT NULL` |
-| Row limit | 20 |
-
-Suggested title:
-
-```text
-Personajes - Top 20
-```
-
----
-
-### 12.8 Branded vs Unbranded
-
-Chart type:
-
-```text
-Pie Chart / Donut Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `branded_str` |
-| Metric | `COUNT(*)` |
-
-Suggested title:
-
-```text
-Branded / Unbranded
-```
-
----
-
-### 12.9 Branded franchises
-
-Chart type:
-
-```text
-Treemap
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `franchise_n1_str` |
-| Metric | `COUNT(*)` |
-| Filter | `franchise_n1_str IS NOT NULL` |
-
-Suggested title:
-
-```text
-Franquicias Brandeadas
-```
-
----
-
-### 12.10 Top 100 searched products
-
-Chart type:
-
-```text
-Table
-```
-
-Configuration:
-
-| Column | Value |
-|---|---|
-| Product | `nouns_keyword_str` |
-| Metric | `COUNT(*)` |
-| Sort | count descending |
-| Row limit | 100 |
-
-Suggested title:
-
-```text
-Top 100 de productos buscados
-```
-
----
-
-### 12.11 Branded product and character
-
-Chart type:
-
-```text
-Table
-```
-
-Configuration:
-
-| Column | Value |
-|---|---|
-| Character | `character_str` |
-| Product | `nouns_keyword_str` |
-| Metric | `COUNT(*)` |
-| Sort | count descending |
-
-Suggested title:
-
-```text
-Producto branded y personaje
-```
-
----
-
-### 12.12 Top 10 trends
-
-Chart type:
-
-```text
-Bar Chart
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `keyword_str` |
-| Metric | `COUNT(*)` |
-| Sort | count descending |
-| Row limit | 10 |
-
-Suggested title:
-
-```text
-Top 10 en Tendencias
-```
-
----
-
-### 12.13 Words searched inside franchise level 2
-
-Chart type:
-
-```text
-Treemap
-```
-
-Configuration:
-
-| Field | Value |
-|---|---|
-| Dimension | `nouns_keyword_str` |
-| Metric | `COUNT(*)` |
-| Filter | `franchise_n2_str IS NOT NULL` |
-| Row limit | 20 |
-
-Suggested title:
-
-```text
-Palabras buscadas dentro de franquicias Nivel 2 TOP 20
-```
-
----
-
-## 13. Recommended dashboard styling
-
-To match the dashboard screenshots:
-
-- Use a dark navy header for each chart title.
-- Use white cards with subtle shadow.
-- Use consistent Spanish titles.
-- Use filters at dashboard level:
-  - country
-  - category
-  - subcategory
-  - date range
-  - branded/unbranded
-  - franchise level 1
-  - franchise level 2
-- Use `COUNT(*)` as the initial metric.
-- Later, if the API provides a volume/rank field, replace `COUNT(*)` with a stronger business metric.
-
----
-
-## 14. Operational notes
-
-### Re-running a day
-
-The current local version replaces the staging L3 table on each run. For production, use an incremental loading strategy with a merge key based on:
-
-```text
-keyword_str, url_str, date_dte, country_str, category_str, subcategory_str
-```
-
-### Secrets
-
-Never commit real API secrets to Git. Keep them only in `.env`, Airflow Connections, or a secret manager.
-
-### Scaling
-
-For a larger number of subcategories, replace the sequential API loop with Airflow dynamic task mapping or a batch-per-country design.
-
----
-
-## 15. Troubleshooting
-
-### Airflow cannot connect to PostgreSQL
-
-Check that the PostgreSQL container is healthy:
+| Dagster UI | <http://localhost:3000> | none |
+| Superset | <http://localhost:8088> | `admin` / `admin` |
+| MinIO console | <http://localhost:9001> | `minioadmin` / `minioadmin` |
+| MinIO S3 API | <http://localhost:9000> | same as the console |
+| PostgreSQL | `localhost:5434`, database `snowflake_dev` | `postgres` / `postgres` |
+| Adminer | <http://localhost:8082> (server `postgres`) | PostgreSQL credentials |
+| Dozzle (logs) | <http://localhost:8888> | none |
+
+## 5. Configuration
+
+Everything is configured through `.env` (read by Docker Compose; every variable has a default).
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `ML_CLIENT_ID`, `ML_CLIENT_SECRET` | — | Mercado Libre application credentials (**required**) |
+| `ML_GRANT_TYPE` | `client_credentials` | OAuth grant used to get the access token |
+| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | `snowflake_dev`, `postgres`, `postgres` | Analytics database (applied when its volume is created) |
+| `POSTGRES_EXTERNAL_PORT` | `5434` | Host port of PostgreSQL (5434 avoids clashing with a local PostgreSQL) |
+| `DAGSTER_POSTGRES_PASSWORD` | `dagster` | Dagster metadata database |
+| `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_BUCKET` | `minioadmin`, `minioadmin`, `meli-datalake` | Data lake credentials (password ≥ 8 characters) and bucket |
+| `SUPERSET_SECRET_KEY`, `SUPERSET_ADMIN_USERNAME`, `SUPERSET_ADMIN_PASSWORD` | local default, `admin`, `admin` | Superset |
+| `PIPELINE_TIMEZONE` | `America/Argentina/Buenos_Aires` | Snapshot date and schedule time zone |
+| `PIPELINE_SCHEDULE_CRON` | `0 23 * * *` | Daily schedule |
+| `PIPELINE_RUN_ON_STARTUP` | `true` | Run once after the first `docker compose up -d` |
+| `MELI_SELECTED_SUBCATEGORIES_ONLY` | `true` | Only subcategories with `id_seleccionado = 1` (756 of 1,389) |
+| `MELI_MAX_WORKERS` | `4` | Parallel calls to the Mercado Libre API |
+| `MATCHING_FUZZY_ENABLED` | `true` | Typo correction for character names (section 7) |
+| `HOST_BIND_IP` | `127.0.0.1` | Interface for every published port; `0.0.0.0` exposes them to your network |
+| `DAGSTER_PORT`, `SUPERSET_PORT`, `MINIO_API_PORT`, `MINIO_CONSOLE_PORT`, `DOZZLE_PORT`, `ADMINER_PORT` | `3000`, `8088`, `9000`, `9001`, `8888`, `8082` | Host ports |
+
+After editing `.env`, apply the change with `docker compose up -d`.
+
+## 6. The Dagster pipeline
+
+The pipeline is a graph of [software-defined assets](https://docs.dagster.io/guides/build/assets)
+in the code location `meli_trends_pipeline` (package `meli_trends_pipeline/`).
+
+| Asset | Group | What it does |
+|---|---|---|
+| `standardization_revenue_research_meli/brands` | reference_data | Loads `data/input/brands.xlsx` into a typed table |
+| `standardization_revenue_research_meli/characters` | reference_data | Loads `characters.xlsx` (owner, franchise N1–N3, content, curator comments) |
+| `standardization_revenue_research_meli/mercado_libre_subcat` | reference_data | Loads `mercado_libre_subcat.xlsx` |
+| `meli_datalake/trends_l1_raw` | trends | Calls the trends API for every selected subcategory (parallel, retries, token refresh) and writes the raw CSV to L1 |
+| `meli_datalake/trends_l2_clean` | trends | Trims values, drops empty keywords and duplicates, writes parquet to L2 |
+| `stg_revenue_research_meli/meli_trends_l3` | trends | Brand and character matching (section 7), writes parquet to L3 and loads the staging table |
+| `trends` | analytics | dbt model `mdm_revenue_research_meli.trends` plus 9 data tests (asset checks) |
+
+- **Job** `meli_trends_pipeline_job` materializes all assets in order; each step retries twice
+  with exponential backoff.
+- **Schedule** `meli_trends_daily_schedule`: `PIPELINE_SCHEDULE_CRON` in `PIPELINE_TIMEZONE`,
+  enabled by default.
+- **Sensor** `meli_trends_first_run_sensor`: runs the job after the first start when the final
+  table has never been built (at most one attempt per day).
+- **Idempotent**: the snapshot date comes from the pipeline time zone, and re-running a day
+  replaces that day in staging and in the final table, so history is kept without duplicates.
+- **Safe extraction**: if more than half of the API calls fail, the run fails instead of
+  publishing partial data. Missing or placeholder credentials stop it with a clear message.
+
+Run it manually from the UI (*Jobs → meli_trends_pipeline_job → Materialize all*) or from a
+terminal:
 
 ```bash
-docker ps
-docker logs meli-postgres
+docker compose exec dagster-webserver dagster job launch --job meli_trends_pipeline_job --workspace /opt/dagster/dagster_home/workspace.yaml
 ```
 
-### Mercado Libre API returns 401
+> In Git Bash on Windows, prefix that command with `MSYS_NO_PATHCONV=1` so the container path
+> is not rewritten. PowerShell and CMD do not need it.
 
-Validate:
+## 7. Brand and character matching
 
-```env
-ML_CLIENT_ID
-ML_CLIENT_SECRET
-ML_GRANT_TYPE
+The L3 step decides, for every keyword, which brand and which character it mentions. A wrong
+match inflates "Branded" share and pollutes the franchise and owner charts, so the matcher is
+built to **prefer missing a match over inventing one**. The code is in
+`meli_trends_pipeline/matching/` and has no Dagster dependency.
+
+### How a keyword is matched
+
+Keywords and reference names go through the same normalization: lowercase, accents removed
+(but `ñ` kept, so "cañón" never becomes the brand "canon"), punctuation removed. Then:
+
+| Method | Example | Guard against false positives |
+|---|---|---|
+| `exact` | "zapatillas **nike**" | Whole words only: "luca" never matches inside "peluca", "rico" never inside "eléctrico" |
+| `compact` | "**spider-man**" → Spiderman, "**hotwheels**" → Hot Wheels | Never starts or ends with a stopword ("el gato" ≠ Elgato), never only product words ("pro max" ≠ Promax); a split spelling ("go pro") needs the joined one ("gopro") in the same day's data |
+| `variant` | "peluche **minion**" → Minions | Characters only ("pumas" is a club, not Puma); for one-word names the listed form must also appear that day ("eternal" ≠ Eternals) |
+| `fuzzy` | "peluche **stich**" → Stitch, "rayo **macqueen**" → Rayo McQueen | Characters only, one letter, first and last letters kept, never a real word ("switch" ≠ Stitch), and the correct spelling must be at least twice as frequent in the day's data |
+
+On top of that:
+
+- **Ambiguous names.** A reference name that is also an everyday word, first name, place or
+  generic phrase ("power", "polo", "saxo", "roller", "lisa", "power bank") is ambiguous. An
+  ambiguous **brand** is never matched. An ambiguous **character** only matches when the keyword
+  also names its franchise or owner: "anna **frozen**" → Anna, but "muñeca anna" → nothing. The
+  comments column of `characters.xlsx` (e.g. "Ariel producto para lavar") marks one-word
+  characters as ambiguous too.
+- **Units.** A brand that is also a unit is ignored after a number: "impresora **hp**" → HP, "motor
+  2 **hp**" → nothing.
+- **Overlaps.** The longest match wins. A match nested inside an unrelated match of the other
+  kind is dropped ("jessica simpson perfume" is the brand, not the character Simpson), unless the
+  brand owns the franchise ("lego friends" → brand Lego and character Lego Friends).
+
+Each row records how it was matched: `brand_match_method_str`, `brand_match_score_int` and
+`brand_matched_text_str` (and the same for characters), so any match can be audited.
+
+### Measured on real data
+
+On the 27,631 trend rows of the 2026-10-22 snapshot, comparing the previous Airflow matcher
+(substring search plus `token_set_ratio` ≥ 85/90) with the new one on the same keywords, and
+reviewing a random sample of 60 matches of each kind:
+
+| | Previous matcher | New matcher |
+|---|---|---|
+| Rows flagged "Branded" | 30.1% | 19.4% |
+| False positives in 60 brand matches | 18 (e.g. "ram", "a", "pro", "plus", "saxo", "gaucho") | 0 (1 unclear) |
+| False positives in 60 character matches | 26 (e.g. "eléctrico" → Rico, "inalámbrico" → Nala, "peluca" → Luca) | 0 |
+
+Known remaining limits: a trusted character that is also a product line ("razer **wolverine**",
+"ping pong **loki**") still matches, and recall is lower on purpose (for example "power a" and
+other brands written as everyday words are not tagged).
+
+### Tuning
+
+The word lists are plain text in `meli_trends_pipeline/matching/wordlists/` (one normalized
+term per line):
+
+| File | Effect |
+|---|---|
+| `ambiguous_aliases.txt` | Names that are everyday words: never a brand; a character only with franchise context |
+| `trusted_brands.txt`, `trusted_characters.txt` | Override every ambiguity rule for that kind ("apple", "stitch") |
+| `generic_terms.txt`, `stopwords.txt`, `units.txt` | Product vocabulary, function words and units (category names are added automatically) |
+| `fuzzy_protected_words.txt` | Real words that are never typo-corrected into a character name |
+
+Add misspellings the business cares about as extra rows in `characters.xlsx` (it already has
+"Spaiderman", "barby", "hotweels"…). After editing a list or an Excel file, rebuild with
+`docker compose up -d --build` and run the job. `MATCHING_FUZZY_ENABLED=false` turns typo
+correction off.
+
+## 8. Data model
+
+### PostgreSQL (`snowflake_dev`)
+
+| Schema.table | Written by | Content |
+|---|---|---|
+| `standardization_revenue_research_meli.brands` | Dagster | `brand_str`, `branded_int` |
+| `standardization_revenue_research_meli.characters` | Dagster | `number_id_int`, `group_company_owner_rights_str`, `twdc_int`, `franchise_n1_str`… `franchise_n3_str`, `content_str`, `character_str`, `detail_str`, `comment_str` |
+| `standardization_revenue_research_meli.mercado_libre_subcat` | Dagster | Subcategory codes per country, homologated names, `id_selected_int` |
+| `stg_revenue_research_meli.meli_trends_l3` | Dagster | One row per keyword × subcategory × day, typed, all dates kept |
+| `mdm_revenue_research_meli.trends` | dbt | **Final table for Superset**: staging plus `week_dte`, incremental by `date_dte` |
+
+Main columns of `mdm_revenue_research_meli.trends`:
+
+| Column | Meaning |
+|---|---|
+| `keyword_str`, `url_str` | Keyword and Mercado Libre search URL returned by the API |
+| `date_dte`, `week_dte`, `year/month/day_calendar_int` | Snapshot date (pipeline time zone) and its week (Monday) |
+| `country_str`, `category_str`, `subcategory_str` | From `mercado_libre_subcat.xlsx` (homologated names) |
+| `brand_str`, `second_brand_str` | Brands found in the keyword |
+| `character_str`, `group_company_owner_rights_str`, `twdc_int`, `franchise_n1_str`… `franchise_n3_str`, `content_str` | Character found and its owner / franchise hierarchy |
+| `has_brand_str`, `has_character_str`, `has_franchise_n1/2/3_str` | `YES` / `NO` flags |
+| `branded_str` | `Branded` when a brand or a character was found, otherwise `Unbranded` |
+| `normalized_keyword_es_str`, `keyword_es_without_stopwords_str`, `nouns_keyword_str` | Normalized keyword, without stopwords, and the product words left after removing brand/character mentions ("mochila stitch" → "mochila") |
+| `*_match_method_str`, `*_match_score_int`, `*_matched_text_str` | Matching audit trail |
+| `loading_dtm`, `file_row_id_int` | Load timestamp and row number within the snapshot |
+
+### MinIO (`meli-datalake`)
+
+```text
+L1_delta/revenue_research_meli/trends/mercado_libre_trends_ddmmyyyy.csv
+L2_databases/revenue_research_meli/trends/date_dte=YYYY-MM-DD/meli_trends.parquet
+L3_standardization/revenue_research_meli/trends/date_dte=YYYY-MM-DD/meli_trends.parquet
 ```
 
-### MinIO bucket missing
+## 9. Superset dashboards
 
-Run:
+The connection **MeLi Trends (PostgreSQL)** is created automatically. After the first run:
+
+1. Open <http://localhost:8088> and log in.
+2. Go to *Datasets → + Dataset*, choose the database **MeLi Trends (PostgreSQL)**, schema
+   `mdm_revenue_research_meli` and table `trends`.
+3. Create the charts below and add them to a dashboard named **Mercado Libre Trends Analytics**.
+
+Reference screenshots are in [`superset/`](superset/). Use `COUNT(*)` as the metric and add
+dashboard filters for country, category, subcategory, date, branded/unbranded and franchise N1/N2.
+
+| Chart (suggested title) | Type | Configuration |
+|---|---|---|
+| Tendencias de búsquedas brandeadas por país | Line | X `week_dte`, series `country_str`, filter `branded_str = 'Branded'` |
+| Share por Compañía | Treemap | Dimension `group_company_owner_rights_str` (not null) |
+| Compañías por País | Bar (stacked) | X `country_str`, series `group_company_owner_rights_str` (not null) |
+| Franquicias Nivel 1 | Pie / donut | Dimension `franchise_n1_str` (not null) |
+| Franquicias Nivel 2 por país | Bar (stacked) | X `country_str`, series `franchise_n2_str` (not null) |
+| Top 10 de Tendencias Branded en la categoría | Horizontal bar | Dimension `keyword_str`, filter `branded_str = 'Branded'`, sort descending, limit 10 |
+| Personajes - Top 20 | Word cloud | Text `character_str` (not null), limit 20 |
+| Branded / Unbranded | Pie / donut | Dimension `branded_str` |
+| Franquicias Brandeadas | Treemap | Dimension `franchise_n1_str` (not null) |
+| Top 100 de productos buscados | Table | `nouns_keyword_str`, sort descending, limit 100 |
+| Producto branded y personaje | Table | `character_str`, `nouns_keyword_str`, sort descending |
+| Top 10 en Tendencias | Bar | Dimension `keyword_str`, sort descending, limit 10 |
+| Palabras buscadas dentro de franquicias Nivel 2 TOP 20 | Treemap | Dimension `nouns_keyword_str`, filter `franchise_n2_str` not null, limit 20 |
+
+## 10. Operations
+
+| Task | Command |
+|---|---|
+| Status of every container | `docker compose ps` |
+| Logs of one service | `docker compose logs -f dagster-code` (or open Dozzle) |
+| Apply code, word-list or Excel changes | `docker compose up -d --build` |
+| Run the test suite (inside the image) | `docker compose exec dagster-code python -m pytest` |
+| Rebuild the final table from all staging history | see below |
+| Stop everything (data is kept) | `docker compose down` |
+| Delete everything, data included | `docker compose down -v` |
+
+Full refresh of the dbt model (for example after changing its SQL):
 
 ```bash
-docker compose up create-minio-bucket
+docker compose exec dagster-code dbt build --full-refresh --project-dir dbt --profiles-dir dbt/profiles
 ```
 
-### dbt model does not exist in Superset
+The reference Excel files are baked into the Dagster image: after replacing a file in
+`data/input/`, run `docker compose up -d --build` and materialize the pipeline again.
 
-Run the Airflow DAG first, then verify:
+**Coming from the Airflow version (`meli_trends_etl`).** The Compose project is now named
+`meli_trends_pipeline` and uses new volumes. Remove the old containers (`-v` would also delete
+their volumes):
 
-```sql
-SELECT COUNT(*) FROM mdm_revenue_research_meli.trends;
+```bash
+docker compose -p meli_trends_etl down
 ```
 
----
+## 11. Troubleshooting
 
-## 16. Professional next steps
+| Symptom | Fix |
+|---|---|
+| `Bind for 127.0.0.1:XXXX failed: port is already allocated` | Another program uses that port; change it in `.env` (e.g. `DAGSTER_PORT=3100`) and run `docker compose up -d` |
+| The run fails at `trends_l1_raw` with "ML_CLIENT_ID is not configured" or HTTP 401/403 | Fix `ML_CLIENT_ID` / `ML_CLIENT_SECRET` in `.env`, `docker compose up -d`, then *Materialize all* in Dagster |
+| `trends_l1_raw` fails with many HTTP 429 | Lower `MELI_MAX_WORKERS` (e.g. `2`) |
+| `dagster-code` stays unhealthy | `docker compose logs dagster-code`; the code location prints the import error |
+| Superset login fails after changing the admin password in `.env` | The admin user is created once; change the password in Superset, or `docker compose down` and `docker volume rm meli_trends_pipeline_superset_home` |
+| PostgreSQL rejects the password after editing `.env` | Credentials apply only when the volume is created; restore the old value or reset with `docker compose down -v` |
+| A shell script fails with `\r: command not found` after cloning on Windows | The repository forces LF line endings (`.gitattributes`); re-clone, or run `git add --renormalize .` and check out again |
+| Dozzle shows no containers (rootless Docker) | Point its volume to your socket, e.g. `$XDG_RUNTIME_DIR/docker.sock` |
 
-Recommended improvements:
+## 12. Project structure
 
-1. Add `brand_match_score` and `character_match_score`.
-2. Convert the dbt model to incremental materialization.
-3. Add dbt data quality tests for nulls, accepted values and uniqueness.
-4. Add Great Expectations or Soda for raw data validation.
-5. Add Superset dashboard exports for CI/CD.
-6. Replace fuzzy matching with embeddings for semantic matching.
+```text
+meli_trends_pipeline/
+├── docker-compose.yml               # whole platform
+├── .env.example                     # every setting, with defaults
+├── docker/
+│   ├── dagster/                     # Dagster image, instance config, locked dependencies
+│   └── superset/                    # Superset image and bootstrap (admin + DB connection)
+├── meli_trends_pipeline/            # Dagster code location
+│   ├── definitions.py               # assets, job, schedule, sensor, resources
+│   ├── automation.py                # job, daily schedule, first-run sensor
+│   ├── assets/                      # reference data, L1/L2/L3 trends, dbt
+│   ├── matching/                    # normalization, matcher, enrichment, word lists
+│   ├── resources.py                 # PostgreSQL, MinIO, Mercado Libre API
+│   ├── settings.py                  # environment settings and names
+│   └── warehouse.py                 # DDL and bulk-load helpers
+├── dbt/                             # dbt project (source, incremental model, tests)
+├── data/input/                      # brands.xlsx, characters.xlsx, mercado_libre_subcat.xlsx
+├── superset/                        # dashboard screenshots
+└── tests/                           # pytest suite (matching, enrichment, Dagster definitions)
+```
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for deta
+This project is licensed under the MIT License; see the [LICENSE](LICENSE) file for details.

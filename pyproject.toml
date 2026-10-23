@@ -1,0 +1,20 @@
+[project]
+name = "meli_trends_pipeline"
+version = "2.0.0"
+description = "Mercado Libre search trends pipeline: Dagster + MinIO + PostgreSQL + dbt + Superset."
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+
+[tool.dagster]
+module_name = "meli_trends_pipeline.definitions"
+code_location_name = "meli_trends_pipeline"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::dagster.BetaWarning",
+    "ignore::dagster.PreviewWarning",
+]

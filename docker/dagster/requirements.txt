@@ -1,0 +1,18 @@
+dagster==1.13.25
+dagster-webserver==1.13.25
+dagster-postgres==0.29.25
+# SQLAlchemy 2.1 defaults postgresql:// to psycopg 3; dagster-postgres ships psycopg2.
+SQLAlchemy==2.0.54
+dagster-dbt==0.29.25
+dbt-core==1.11.15
+dbt-postgres==1.11.0
+pandas==2.3.3
+pyarrow==25.0.1
+openpyxl==3.1.5
+requests==2.32.5
+boto3==1.40.70
+psycopg2-binary==2.9.11
+rapidfuzz==3.14.3
+Unidecode==1.4.0
+tzdata==2025.2
+pytest==8.4.2

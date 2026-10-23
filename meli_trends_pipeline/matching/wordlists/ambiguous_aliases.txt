@@ -1,0 +1,2333 @@
+# Reference names (brands and characters) that are also everyday words, first
+# names, places or generic phrases: "power", "saxo", "roller", "lisa", "power bank".
+# * A brand listed here is never matched (there is no context to disambiguate it).
+# * A character listed here only matches when the keyword also contains a term
+#   from its franchise or owner ("anna frozen" matches, "anna" alone does not).
+# trusted_brands.txt / trusted_characters.txt override this list for their kind.
+# Built from data/input/*.xlsx by screening every name against word-frequency data
+# and Spanish/Portuguese/English dictionaries, then reviewed against real trends.
+# Add a line to silence a noisy name. One normalized term per line (lowercase, no
+# accents except ñ).
+
+100 pure
+4711
+505
+a
+a nation
+a tech
+abaco
+abasi
+abbott
+abigail
+accord
+ache
+achilles
+acoustic
+acp
+acrobata
+action pro
+action team
+adams
+adar
+aditivo
+admiral
+admit one
+adn
+adora
+ads
+advance
+advanced
+adventure
+aegis
+ag
+agata
+agility
+agnes
+agori
+aguilar
+aida
+aim
+air king
+alabama
+alacrity
+aladar
+alba
+aldo
+alegria
+alice
+alicia
+all nature
+all protein
+all terra
+alliance
+alpha
+alpine
+alta moda
+alto estilo
+alto professional
+altura
+always
+amazonas
+amber
+amc
+amend
+amil
+amor mio
+analog
+analogue
+anastacia
+anchor
+anderson
+andressa
+angelus
+anna
+antares
+antonella
+any color
+ap
+apacer
+apache
+api
+apogee
+apolo
+apu
+aqua tech
+aquario
+aquistar
+arcano
+arctic
+arena
+ares
+argento
+argos
+aria
+ariete
+arista
+arizona
+armada
+army
+aroma
+arrest
+arrow
+art house
+artistry
+asa
+asi
+asia
+ask
+astrid
+astro
+astrolabio
+ateco
+atenas
+athletic
+ati
+atlantic
+atlantis
+atlas
+atm
+atop
+atoto
+atrio
+att
+attack
+audaz
+audio leader
+audio logic
+audio sonic
+august
+aula
+aura
+aurora
+austin
+auteco
+auto world
+avalanche
+avant
+avante
+avanzada
+avc
+aven
+avery
+avid
+aw
+axiom
+axioma
+axis
+axon
+ayres
+az
+azimute
+azor
+azul
+b l
+b max
+b on
+b way
+b3
+baby colors
+baby doll
+baby elephant
+baby joy
+baby one
+baby relax
+baby style
+baby up
+bad boy
+badger
+bago
+bagues
+baileys
+balda
+baldwin
+ballad
+ballistic
+balt
+bam
+bamboo
+bando
+barcelona
+bare
+barton
+basement
+bauer
+bazar up
+bb
+bbs
+bc
+be custom
+be yourself
+beaba
+beacon
+beagle
+beats
+beauty
+beck
+beira mar
+bel
+bela
+beleza saude
+bell
+bem
+benchmark
+benson
+bernard
+berol
+berserk
+best
+best choice
+best choice products
+best massage
+best office
+beta
+betel
+better
+beyonce
+bh
+bianchi
+bibi
+big bang
+big shop
+big sound
+big star
+bilbao
+billboard
+bingo
+biotipo
+birch
+birdhouse
+bk
+black box
+black diamond
+black kiss
+black pink
+black stone
+black white
+blade
+blaze
+blazer
+blessing
+blink
+blip
+blizzard
+bloom
+blossom
+bls
+blu
+blue
+blue sound
+blue wave
+bluebird
+blunt
+bm
+boas
+boating
+body care
+body control
+bodybuilders
+bombardier
+bombay
+bomber
+bon
+bona
+bookstore
+boon
+boos
+boost
+booster
+booty
+bora
+bora la
+born free
+borne
+bos
+boss
+boston
+boulevard
+bower
+br
+brady
+brava
+bravery
+bravo
+breton
+brica
+brick game
+bride
+bright
+bright star
+bright stars
+brilliance
+brio
+brisa
+britania
+brooks
+bs
+buddy
+buen nado
+buenos aires led
+buffalo
+buggy
+bular
+bull
+bulldog
+burns
+buro
+c zone
+c6
+ca
+cad
+cadence
+cadiveu
+caiman
+caldwell
+caliber
+calumet
+cambridge
+camper
+canary
+cannon
+canton
+capa de ozono
+capri
+caprice
+capricho
+carabela
+caramel
+caravan
+cardinal
+cardon
+cardoso
+carefree
+cargo
+caribu
+carlisle
+carmim
+carol
+carson
+cartago
+casablanca
+casta
+castor
+cat
+cata
+catarinense
+catherine
+cativa
+catwalk
+cav
+cavalry
+ce
+celine
+cell force
+celta
+centaur
+centauro
+center line
+centon
+century
+cerro
+cf
+chabelo
+chad
+chairs
+challenger
+champs
+chana
+chard
+charly
+chaser
+cher
+cherokee
+cherry
+cherub
+chess
+chic
+chief
+chloe
+choice
+chorus
+chowder
+chronic
+chums
+ciclo
+ciclon
+ciclos
+cid
+cimar
+cinch
+circulo
+ck
+claire
+clap
+clarion
+clarity
+clark
+class gold
+class life
+classic world
+clean
+clear
+clear tv
+cleveland
+click n play
+cliff
+clink
+clock
+clones
+cloth
+club 21
+club happy
+cluster
+cms
+coach
+coast
+coats
+cobra
+cocoon
+cofap
+coleman
+color animal
+color baby
+colorado
+colorful
+coloso
+colossus
+columbia
+combat
+comet
+comfort
+commodore
+como quieres
+como quieres que te quiera
+compañia del sol
+complot
+concept car
+concert
+concord
+concordia
+condor
+conejo
+conejo blanco
+connect
+connor
+contigo
+continental
+continente
+cool pink
+cooper
+copra
+coqueta
+coral
+core
+corona
+corsa
+cosina
+cosmo
+cosmos
+cotton
+cps
+craftsman
+craig
+crate
+crawford
+crazy
+creative
+creed
+creep
+crescent
+crest
+criativa
+cricket
+cross
+crow
+crown
+crs
+crucial
+cruiser
+crux
+cs
+cuadra
+cuatro brazos
+cuba
+cube
+cuidado con el perro
+cultura
+curtis
+custom
+custom sound
+cx
+cyber
+cyberpunk
+cyborg
+cyclone
+cyclops
+cyrus
+dagua
+dakar
+dakota
+dali
+dalton
+dam
+dana
+danny
+darco
+darla
+darling
+dart
+dash
+db
+dbs
+de fabrica
+de la cruz
+decathlon
+dedalo
+deep blue
+deli
+delta
+deluxe
+democrata
+denim
+denuncia
+descendientes
+desiderata
+design
+desigual
+destroyed
+dg
+diamond
+diesel
+digital blue
+digital concepts
+dim
+dime
+dimension
+dina
+dinamo
+dipper
+discover
+discovery
+disguise
+dish
+diva
+diva ring light
+diver
+diversos
+diy
+dl
+dm
+dna
+dni
+dolphin
+dominion
+domo
+doom
+dorman
+dormilon
+doss
+double motor
+double trouble
+dp
+dr j
+dr z
+dragonfly
+dream
+dreams
+drift
+driver
+drop
+drop dead
+ds
+dsp
+dt
+dual
+dub
+dubai
+duck
+duga
+dumont
+duncan
+dune
+duplo
+dupont
+durable
+durban
+dust
+dw
+dx
+dylan
+dynamic
+dynamo
+dz
+e image
+e pos
+e sound
+ea
+eagle
+easy
+easy line
+easy mobile
+eaton
+ec line
+echo
+eclipse
+eco som
+eden
+edge
+edison
+edith
+ego
+eiffel
+el
+electra
+elegance
+elektra
+elenco
+elephant
+elf
+elipsis
+elite
+elixir
+elizabeth
+elo
+elope
+emb
+embark
+embassy
+emerson
+emile
+eminence
+emis
+emit
+emma
+empire
+ems
+encanto
+encore
+endless
+energia e vida
+energy
+energy motion
+energy power
+enhance
+enigma
+ensueño
+ensure
+entertainment system
+entity
+entrelacadas
+epic
+epoch
+epsilon
+equilibrium
+erato
+eros
+escada
+escort
+escualo
+esp
+espacio uno
+essential
+eunice
+eureka
+euro
+europa
+ev
+evans
+eventide
+eventual
+everest
+evolve
+exact
+exceed
+excel
+excelsior
+excess
+exclusiva
+exito
+exo
+expansao
+explora
+explorer
+expressions
+extra
+extreme
+f new
+facil tec
+fairy
+falcon
+fallen
+fallout
+fam
+family computer
+family game
+fan fun
+fanatics
+fancier
+fango
+fantasia
+fantasy
+farad
+faraon
+fas
+fashion bikini
+fatal
+fate
+fc
+fd
+feather
+febo
+fellowes
+felo
+fenix
+ferrato
+fibro
+fiddler
+fierros
+fila
+filler
+fine nature
+finishing touch
+firefly
+first
+fisher
+five star
+flex
+flit
+flora pura
+flora viva
+florense
+flounder
+fly
+focal
+focus
+fol
+footy
+force up
+fort
+fortune
+forum
+forza
+fosa
+foton
+fotorama
+foundations
+fox boy
+fractal
+francis
+free comfort
+free watch
+freedom
+freeing
+freeway
+fresh
+frida
+friedman
+friedrich
+friends
+frost
+ft
+fuel
+fuji
+fuller
+fun
+fun express
+fun game
+fun world
+furor
+fusion
+fuso
+future call
+fw
+g fire
+g tech
+g technology
+g4
+ga
+gadgets
+gaia
+gala
+galena
+galgo
+galileo
+gama
+gambo
+game box
+game box power
+game factor
+game player
+game stick
+gamer tech
+gamma
+gap
+garbo
+garden house
+garrett
+gary
+gates
+gateway
+gaucho
+gb
+gc
+ge
+gear
+gecko
+genesis
+genetic
+geneva
+genio
+genius
+get fit
+gg
+gh
+gibraltar
+gigo
+gim
+gimos
+gimp
+gk
+glamour pink
+global electronics
+gloria
+glyph
+gm
+goal pro
+gofer
+gol
+gola
+gold n hot
+goli
+gonna
+good game
+good life
+goral
+gosh
+gp
+gq
+gradiente
+graf
+gravity
+grays
+grease
+great moments
+green e
+green leaf
+green toys
+grego
+griffin
+grizzly
+grow
+gruñon
+gts
+gu
+guardians
+guerrilla
+gulf
+gumball
+gurgel
+gw
+gyros
+gz
+h
+halo
+hamilton
+hands craft
+handstands
+hangman
+hans
+happy baby
+happy line
+happy well
+harbinger
+harden
+harmonics
+harmony
+harris
+hawk
+hb
+hc
+hd
+hd box
+hd frequency
+he sound
+head
+header
+heist
+helix
+herencia
+hermann
+hermes
+hero
+hertz
+hex
+heyday
+hg
+hi tech
+high power
+hino
+hiper
+hipo
+hispana
+hit
+hm
+hobby
+hocks
+holiday time
+holmes
+home more
+honey lemon
+hooligans
+hope
+horizon
+hornet
+hoya
+hq
+hr
+hs
+ht
+hudson
+hue
+huele
+hunter
+hurley
+hurricane
+husky
+hy
+hype
+i blue
+icaro
+ice
+ice box
+iceberg
+icon
+idea
+ideal
+igor
+ilia
+ilusion
+impact
+impala
+imperial
+imperio
+impulsa
+independent
+independiente
+index
+indian
+indie
+infantino
+ingenuity
+inland
+inline
+ino
+inox
+inquieta
+insignia
+inspira
+interact
+ion
+ipanema
+ira
+iridium
+iris
+iso
+issue
+it
+its skin
+iz
+j deal
+ja
+jabees
+jackson
+jaguar
+jam
+jasmin
+jawbone
+jazmin
+jb
+jensen
+jera
+jessie
+jhs
+jl
+jm
+job presentes
+jockey
+jogger
+joggers
+john smith
+johnson
+joker
+jolie
+jonathan
+joy
+joyo
+jp
+jr
+jump
+jura
+just
+just born
+just fit
+just home collection
+just play
+justice
+jz
+k2
+kai
+kaiser
+kala
+kangaroo
+kanji
+kat
+katia
+kawaii
+keen
+keep
+keep collection
+keeper
+keller
+kelly
+ken
+kent
+kepler
+kes
+kestrel
+kevin
+keystone
+kf
+kick
+kicker
+kickers
+kid connection
+kid designs
+kiddo
+kids
+kids preferred
+kill
+kinder
+king farm
+kingdom come
+kirby
+kiss
+kitchen
+kl
+klein
+km
+kn
+knock out
+knox
+kr
+kraft
+kramer
+kw
+kx
+la girl
+la playa
+la provincia
+la san day
+la ser
+laca
+lada
+lade
+lady rock
+lafayette
+lago
+laird
+lancaster
+lancer
+lang
+las locas
+las margaritas
+lazer
+lbs
+lc
+ld
+lda
+le idea
+le son
+leader
+leadership
+leaper
+leapfrog
+learning journey
+lee
+leem
+lefa
+legacy
+legends
+legrand
+lemon
+lennox
+leo
+leonard
+lets go
+level up
+libero
+liberty
+lica
+lider
+life
+life flo
+life hair
+life natural
+life time
+lifestyle
+lifetime
+lifeworks
+light hair
+lighten
+like
+lili
+lina
+lince
+linco
+lincoln
+line 6
+linea
+linguini
+link bits
+lionel
+liquido
+lisle
+little live
+little steps
+little world
+live
+live up sports
+livestream
+lm
+lob
+lobo solo
+lodge
+loft
+logan
+logic
+logines
+lolita
+lomani
+lomas
+london
+long
+looking
+lopez
+lost
+lotus
+loud audio
+loudspeaker
+lowell
+lp
+lt
+lua morena
+luca
+lucerna
+lume
+lumiere
+lund
+luxo
+luz da lua
+luz de mar
+lw
+m wave
+mac
+mac power
+mac sports
+machine
+macho
+mack
+madonna
+maggie
+magic color
+magic makers
+magna
+magnum
+magnus
+mahogany
+maja
+mam
+mama que sera
+mama win
+mamen
+mami ama bebe
+mancera
+mancini
+map
+marani
+marathon
+maravilhas da terra
+marbles
+marconi
+mares
+margo
+mariner
+marisol
+mark
+marley
+marquis
+marretas
+marshal
+marshall
+mart
+martins
+marty
+mas accesorios
+mash
+mason
+master audio
+master equipment
+master g
+master voice
+masterpieces
+matrix
+matt
+maui
+maurice
+maverick
+max factory
+max force
+maxi
+maxim
+maxima
+maya
+mayhem
+mayoral
+mb
+mca
+md
+mds
+meade
+meco
+medicate
+medinal
+mega
+mega baby
+mega bell
+mega fire
+mele
+melissa
+melo
+memo
+memphis
+mendoza
+mercury
+merge
+merida
+merman
+meteoro
+meto
+metra
+meu
+meu mar
+mex
+mg
+michelangelo
+michele
+midland
+mido
+midway
+mig
+mil colores
+milano
+mileno
+millennia
+miller
+milliard
+mimo
+mini gadgets
+minis
+minuteman
+mio
+mirage
+miro sol
+miss me
+miss pink
+mission
+mister hair
+mistral
+mitas
+mittens
+mix
+mj
+mk
+ml
+mm
+mn
+mobile edge
+moda libre 1
+moe
+mojo
+moment
+momentum
+monaco
+mongoose
+monique
+monogram
+monolith
+monroe
+monster truck
+montana
+monte verde
+montenegro
+montreal
+monza
+moon rain
+mor
+mora
+morel
+morena rosa
+morgan
+morina
+morisco
+morris
+mort
+mosca
+moss
+mota
+moto metal
+motor sports
+motorcycle club
+mount factory
+mount it
+mov
+movement
+mow
+moxa
+mp
+mq
+mr
+mr black
+mr cat
+mr dj
+mrs
+mrs taste
+ms
+mtv
+mueller
+multi tech
+multimarcas
+munchkin
+mundo azul
+mundo terra
+munich
+muriel
+murray
+music box
+music hall
+music man
+musky
+mustang
+muster
+mv
+mw
+my baby
+my fair
+mz
+nabi
+nad
+naked
+nambe
+nani
+nano tec
+napoli
+narciso
+nash
+nathan
+native
+nativo
+natural health
+natural life
+nature
+natures
+nautica
+naxa
+nazca
+nb
+nearly natural
+nebula
+nec
+neca
+neera
+neo
+nero
+nes
+nest
+net
+new audio
+new beach
+new bee
+new brand
+new life
+new line
+new style
+next
+next co
+nexus
+nhl
+nia
+nicols
+nido
+nig
+niles
+ninho
+ninja
+nitro
+nixon
+nk
+no boundaries
+no end
+no name
+no no
+nobel
+nobre
+nolan
+north states
+north tech
+northwest
+norton
+nostalgia
+nova
+novelty
+now
+np
+ns
+nuance
+nucleo
+nutrition now
+ny
+nyc
+oakland
+oasis
+ocean
+oceanic
+ocelot
+odyssey
+off shoes
+off white
+oh
+okey
+old bridge
+old skull
+olga
+olimpo
+oliver
+olivia
+om
+ombu
+omega
+omen
+oms
+on stage
+onda
+one
+one a day
+one for all
+one life
+one sit
+onix
+only
+onset
+onyx
+open
+optima
+opus
+oracle
+orange
+orbit
+orbita
+orbital
+oregon
+oribe
+orient
+origins
+orion
+osaka
+osiris
+oslo
+osprey
+otto
+ou
+out
+outback
+ovation
+overland
+overtime
+own
+ox
+oxford
+oxigeno
+ozone
+ozono
+pacha
+pacific coast
+pacifica
+packard
+paco
+pais filhos
+palio
+palm
+palmer
+palmers
+pampa
+pampero
+pano
+panorama
+panoramic
+panther
+papago
+paradigm
+paradise
+parafernalia
+parati
+parker
+paro
+parrot
+partaker
+patagonia
+patriot
+patron
+pe com pe
+peak
+pearl
+pebble
+peerless
+pegasus
+pelican
+penalty
+penguin
+penthouse
+peregrine
+perfect
+perfect choice
+perfect muscle
+performance
+performance sound
+performance tool
+perkins
+petit
+petra
+pg
+phantom
+phase one
+philosophy
+phoenix
+phonic
+piccolo
+pilot
+pingos
+pink
+pinnacle
+piper
+pit bull
+pix
+pla
+planalto
+planar
+planet audio
+planet girls
+planeta agua
+platinum
+playboy
+playing
+pls
+plum
+plus
+plus power
+plus solutions
+plush
+pluto
+po
+poison
+police
+polo
+polo club
+polo joy
+polo wear
+pomegranate
+ponds
+pony
+pop town
+portier
+portland
+posca
+poseidon
+posma
+power
+power bank
+power click
+power co
+power group
+power line
+power one
+power sonic
+power tech
+power vision
+power works
+powerhouse
+prana
+praxis
+precision power
+prego
+premier
+prenatal
+prestan
+prestige
+presto
+prime tech
+primicia
+primo
+prince
+principe azul
+priori
+prism
+pro
+pro bass
+pro comp
+pro corps
+pro dj
+proco
+proel
+profissional
+profit
+prosper
+protein factory
+protein project
+protocol
+prototype
+prowess
+prs
+psa
+puc
+pulse
+pumpkin
+punch
+punto 1
+push energy
+pyramid
+qq
+quality
+quanta
+quantum
+quarry
+quartet
+quartz
+quasar
+quechua
+queen
+quest
+quickly
+r7
+race face
+racing
+radial
+radians
+radical
+rain design
+rainha
+rajah
+ram
+rambler
+randall
+ranger
+raphael
+rapsodia
+raptor
+rational
+rave
+ravel
+raven
+raw
+raya
+rayon
+rc
+rca
+re audio
+re fuel
+real
+realistic
+red box
+red devil
+red lion
+red nose
+red series
+red sun
+reef
+reflex
+refresh
+rei
+rei terra
+remold
+renaissance
+retro arcade
+retro bit
+retro game
+rev
+revanche
+revel
+reverb
+reves
+revolution
+rewind
+rex
+rg
+rico
+rider
+riffle
+rihanna
+ringo
+riot
+ripple
+rise
+rito
+riva
+riviera
+rm
+road
+roberts
+robin
+robson
+robust
+rochas
+rock
+rock space
+rocker
+rocky
+roda
+roger
+rogue
+roller
+rolls
+roman
+romance
+romi
+ronda
+root
+roots
+rosa tropical
+rose
+ross
+rotary
+rover
+roxy
+royal
+royal black
+royale
+rs
+rubble
+rusk
+rusty
+ruz
+ry
+s zone
+sa
+saab
+saba
+sabian
+sabio
+sabre
+sachs
+sada
+sades
+safari
+safety
+safira
+sag
+sage
+sailfish
+sakura
+salamandra
+salinas
+salles
+samba
+san x
+sandalo
+sansei
+santa areia
+santa clara
+santa cruz
+santa rosa
+santana
+sao paulo
+sas
+sassy
+sat
+sata
+sate
+satellite
+savage
+saxo
+sb
+sc
+schneider
+school smart
+schumacher
+scorpion
+scotch
+scott
+scud
+sea
+sea sea
+sea star
+seagull
+seahorse
+sears
+seat
+sebastian
+seco
+sedal
+seduce
+seguro
+seisa
+select sound
+selene
+seneca
+sense
+sensei
+sentinela
+sentry
+service gym
+seven
+seymour
+sf
+shadow
+shakespeare
+shark
+sharon
+sharp
+sharper
+she
+shelby
+sheldon
+shell
+shenzhen
+shoot
+shotgun
+show
+shutter
+shuttle
+sigma
+signo
+silk
+sillas de outlet
+silvana
+silver
+silver king
+silver max
+sima
+simple
+simple life 4u
+simply
+simulador
+singer
+siri
+sisa
+sistema
+sk
+skinner
+skipper
+skull
+sky
+sky blue
+sky line
+sky music
+sky walker
+skyjacker
+sl
+slide
+slim
+slinky
+sloan
+sm
+small shoes
+smart games
+smart life
+smart nutrition
+smart tech
+smith
+sms
+snark
+soho
+sol y oro
+solana
+solar light mart
+sole
+solutions
+soma
+sometimes retail
+sonar
+sonho
+sonnet
+soprano
+soul
+sound barrier
+sound town
+soundtrack
+soundwave
+south sunny
+sp
+sp gadgets
+spa
+space br
+spain
+spark
+spartan
+spawn
+specialized
+speck
+spectra
+spectrum
+speed
+speedy
+spirit
+splendid
+splinter
+spook
+sport
+sport glass
+sports nutrition
+sports research
+sportsman
+spot
+sprint
+spy
+sq
+sr
+ss natural
+st john
+st lab
+stan
+stand by
+stanford
+staples
+star baby
+star fire
+star kids
+star sonic
+star sound
+start international
+starter
+stealth
+steel home
+steiner
+stellar
+sterling
+stetson
+stf
+stinger
+stingray
+stitching
+stone
+stop
+storm
+streamline
+striker
+strong
+strong nutrition
+sts
+stuart
+studio 9
+studio pro
+style
+stylus
+suave
+sub zero
+sublime
+sugestion
+sultan
+summer color
+summer soul
+sumo
+sun
+sun shine
+sun star
+sunbeam
+sunday
+sundown
+sunflower
+sunny
+sunset
+sup
+sup game box
+super arcade box
+super game box
+super heroes
+super horse
+super nail
+super nutrition
+super slim x
+super star
+super talent
+super toys
+supersonic
+supply
+supra
+supreme
+sure
+surefire
+suri
+sutton
+sven
+swallow
+swan
+swat
+sway
+sweet
+sweet chic
+sweet lady
+swell
+swift
+sx
+t basic
+t gamer
+t go
+t rex
+t3
+tag sound
+take care
+talent
+tall
+tank
+tao
+taos
+target
+tata
+tbs
+team
+team six
+tech
+tech brasil
+tech gear
+technos
+tecno
+tek
+telex
+tera
+terra
+terry
+tes
+tetra
+teva
+texas
+thalia
+the child
+the dark king
+the forest
+the one
+therapy
+thomas
+thompson
+thomson
+thor
+thrasher
+ti power
+tiffany
+tiger
+tigresa
+tim
+time
+timido
+tiny land
+tip top
+tipico
+titan power
+titanium
+tk
+tlc
+tm
+tn
+toa
+token
+tolueno
+tom
+tomate
+toms
+tong
+tontin
+toot
+top bright
+top fit
+top fitness
+top home
+top house
+top life
+top living
+top longer
+top race
+top spin
+top toys
+top use
+top vision
+topping
+tornado
+tornel
+torque
+torres
+total
+total micro
+toto
+touch me
+touchstone
+tough tested
+tout
+tower
+toy king
+toy lab
+tp
+tract
+transcend
+trek
+trend
+trend lab
+tres
+tres marias
+triangle
+tribe
+trident
+tris
+triton
+triumph
+tron
+trooper
+tropicana
+true
+trumpeter
+trunks
+truss
+trust
+tucano
+tucson
+turnpike
+tv star
+tvs
+twice
+twister
+tyler
+u line
+u8
+ufo
+uk pro
+ultra play box
+ultra pro
+ultra tech
+um
+umbra
+under
+unique
+united motors
+united pacific
+universal royal
+uno
+up baby
+up games
+uplift
+urban
+urban factory
+urbanista
+urbano
+ursula
+usa gear
+usher
+utility
+uv line
+uzi
+v smart
+v2
+v7
+v8
+val
+vale
+valentina
+valentino
+valkiria
+valve
+vanessa
+vanguard
+variant
+variedades
+vava
+vector
+veer
+vega
+vello
+velvet
+venom
+vento
+ventura
+venus
+verbatim
+versales
+versus
+vertex
+vf
+via lance
+via marte
+via uno
+vibe
+victoria
+victory
+vientre plano
+view
+view tech
+vigo
+viking
+vince
+vintage
+vio
+vios
+vip
+visao
+vision
+visivo
+vita
+vital
+vitamina
+viva
+vixen
+vogue
+volcano
+voodoo
+vortex
+vox
+voyage
+voyager
+vr box
+vr cam
+vr sky
+w7
+waft
+wagner
+wake
+wanda
+warm
+warrior
+warwick
+wasp
+watch design
+water gear
+wave
+wave sound
+waver
+we
+weber
+weekend
+wells
+wen
+werner
+west
+west lake
+western
+westminster
+wg
+whale
+whistler
+wild
+williams
+wilson
+windsor
+wing
+winner
+wins
+wired
+wireless speaker
+wo
+wonder
+woo
+wood
+woods
+workman
+workshop
+world tech toys
+world view
+worth
+wow
+wr
+wrights
+ws
+wu
+x cam
+x cell
+x game
+x games
+x kim
+x pro
+x tech
+x time
+x treme
+x view
+x7
+xk
+xl
+xl extra large
+xoxo
+xue
+xy
+yakuza
+yes
+yi
+yoga
+yonder
+york
+you me
+you take on
+youth class
+ypf
+yuki
+zafira
+zane
+zealot
+zebra
+zelotes
+zen
+zenit
+zenith
+zero
+zest
+zeta
+zeus
+zing
+zion
+zodiac
+zoe
+zona criativa
+zonar
+zr
+zurich
