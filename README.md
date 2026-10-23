@@ -49,7 +49,7 @@ Mercado Libre API ──► L1  MinIO  raw CSV          L1_delta/revenue_researc
 
 | Component | Role |
 |---|---|
-| Dagster 1.13 | Orchestration: assets, daily schedule, retries, lineage, run history (UI on port 3000) |
+| Dagster 1.13 | Orchestration: assets, daily schedule, retries, lineage, run history (UI on port 3030) |
 | PostgreSQL 15 | Reference tables, staging table and final dbt model (database `snowflake_dev`) |
 | MinIO | S3-compatible data lake (L1 / L2 / L3) |
 | dbt 1.11 | Final analytical model with data tests (run by Dagster, tests shown as asset checks) |
@@ -125,7 +125,7 @@ The first start builds two images (Dagster and Superset, a few minutes). Then:
    `meli_trends_first_run_sensor`). It takes about two minutes.
 5. From then on it runs every day at 23:00, Buenos Aires time.
 
-Follow the run in Dagster (<http://localhost:3000>, *Runs*). When it finishes, the final table
+Follow the run in Dagster (<http://localhost:3030>, *Runs*). When it finishes, the final table
 `mdm_revenue_research_meli.trends` is ready in Superset. Check the containers with:
 
 ```bash
@@ -138,7 +138,7 @@ All ports are published on `127.0.0.1` only (see `HOST_BIND_IP`).
 
 | Service | URL | Credentials (defaults) |
 |---|---|---|
-| Dagster UI | <http://localhost:3000> | none |
+| Dagster UI | <http://localhost:3030> | none |
 | Superset | <http://localhost:8088> | `admin` / `admin` |
 | MinIO console | <http://localhost:9001> | `minioadmin` / `minioadmin` |
 | MinIO S3 API | <http://localhost:9000> | same as the console |
@@ -166,7 +166,7 @@ Everything is configured through `.env` (read by Docker Compose; every variable 
 | `MELI_MAX_WORKERS` | `4` | Parallel calls to the Mercado Libre API |
 | `MATCHING_FUZZY_ENABLED` | `true` | Typo correction for character names (section 7) |
 | `HOST_BIND_IP` | `127.0.0.1` | Interface for every published port; `0.0.0.0` exposes them to your network |
-| `DAGSTER_PORT`, `SUPERSET_PORT`, `MINIO_API_PORT`, `MINIO_CONSOLE_PORT`, `DOZZLE_PORT`, `ADMINER_PORT` | `3000`, `8088`, `9000`, `9001`, `8888`, `8082` | Host ports |
+| `DAGSTER_PORT`, `SUPERSET_PORT`, `MINIO_API_PORT`, `MINIO_CONSOLE_PORT`, `DOZZLE_PORT`, `ADMINER_PORT` | `3030`, `8088`, `9000`, `9001`, `8888`, `8082` | Host ports |
 
 After editing `.env`, apply the change with `docker compose up -d`.
 
@@ -371,7 +371,7 @@ docker compose -p meli_trends_etl down
 
 | Symptom | Fix |
 |---|---|
-| `Bind for 127.0.0.1:XXXX failed: port is already allocated` | Another program uses that port; change it in `.env` (e.g. `DAGSTER_PORT=3100`) and run `docker compose up -d` |
+| `Bind for 127.0.0.1:XXXX failed: port is already allocated` or `address already in use` | Another program uses that port (Grafana, for example, listens on 3000); change it in `.env` (e.g. `DAGSTER_PORT=3100`) and run `docker compose up -d` |
 | `pull access denied for meli-trends-pipeline/...` | Those images are built locally (`pull_policy: build`) and never pulled; update to the current `docker-compose.yml`, or run `docker compose build` once |
 | The run fails at `trends_l1_raw` with "ML_CLIENT_ID is not configured" or HTTP 401/403 | Fix `ML_CLIENT_ID` / `ML_CLIENT_SECRET` in `.env`, `docker compose up -d`, then *Materialize all* in Dagster |
 | `trends_l1_raw` fails with many HTTP 429 | Lower `MELI_MAX_WORKERS` (e.g. `2`) |
