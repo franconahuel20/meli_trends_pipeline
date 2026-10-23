@@ -142,9 +142,30 @@ All ports are published on `127.0.0.1` only (see `HOST_BIND_IP`).
 | Superset | <http://localhost:8088> | `admin` / `admin` |
 | MinIO console | <http://localhost:9001> | `minioadmin` / `minioadmin` |
 | MinIO S3 API | <http://localhost:9000> | same as the console |
-| PostgreSQL | `localhost:5434`, database `snowflake_dev` | `postgres` / `postgres` |
+| PostgreSQL | Not a web page: host `localhost`, port `5434`, database `snowflake_dev` (SQL clients only) | `postgres` / `postgres` |
 | Adminer | <http://localhost:8082> (server `postgres`) | PostgreSQL credentials |
 | Dozzle (logs) | <http://localhost:8888> | none |
+
+### Connecting to PostgreSQL
+
+PostgreSQL speaks its own protocol, not HTTP: opening `localhost:5434` in a browser returns an
+empty response. Use one of these instead:
+
+- **Browser (Adminer)**: open <http://localhost:8082> and log in with *System* `PostgreSQL`,
+  *Server* `postgres` (the container name, not `localhost`), *Username* `postgres`,
+  *Password* `postgres`, *Database* `snowflake_dev`.
+- **Desktop client (DBeaver, pgAdmin, DataGrip, VS Code)**: host `localhost`, port **5434**
+  (not 5432, which belongs to any PostgreSQL installed on your machine), database
+  `snowflake_dev`, user `postgres`, password `postgres`, SSL disabled.
+- **Terminal**:
+
+  ```bash
+  psql -h localhost -p 5434 -U postgres -d snowflake_dev
+  ```
+
+The final table is `mdm_revenue_research_meli.trends`. A client running inside another Docker
+network, or on another machine, cannot reach the port because it is published on `127.0.0.1`
+only; set `HOST_BIND_IP=0.0.0.0` in `.env` if you really need that.
 
 ## 5. Configuration
 
@@ -377,6 +398,7 @@ docker compose -p meli_trends_etl down
 | `trends_l1_raw` fails with many HTTP 429 | Lower `MELI_MAX_WORKERS` (e.g. `2`) |
 | `dagster-code` stays unhealthy | `docker compose logs dagster-code`; the code location prints the import error |
 | Superset login fails after changing the admin password in `.env` | The admin user is created once; change the password in Superset, or `docker compose down` and `docker volume rm meli_trends_pipeline_superset_home` |
+| The browser shows "empty response" at `localhost:5434`, or a client reports the database `snowflake_dev` does not exist | PostgreSQL is not a web page and its host port is 5434, not 5432; see [Connecting to PostgreSQL](#connecting-to-postgresql) |
 | PostgreSQL rejects the password after editing `.env` | Credentials apply only when the volume is created; restore the old value or reset with `docker compose down -v` |
 | A shell script fails with `\r: command not found` after cloning on Windows | The repository forces LF line endings (`.gitattributes`); re-clone, or run `git add --renormalize .` and check out again |
 | Dozzle shows no containers (rootless Docker) | Point its volume to your socket, e.g. `$XDG_RUNTIME_DIR/docker.sock` |
