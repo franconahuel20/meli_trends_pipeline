@@ -372,6 +372,7 @@ docker compose -p meli_trends_etl down
 | Symptom | Fix |
 |---|---|
 | `Bind for 127.0.0.1:XXXX failed: port is already allocated` | Another program uses that port; change it in `.env` (e.g. `DAGSTER_PORT=3100`) and run `docker compose up -d` |
+| `pull access denied for meli-trends-pipeline/...` | Those images are built locally (`pull_policy: build`) and never pulled; update to the current `docker-compose.yml`, or run `docker compose build` once |
 | The run fails at `trends_l1_raw` with "ML_CLIENT_ID is not configured" or HTTP 401/403 | Fix `ML_CLIENT_ID` / `ML_CLIENT_SECRET` in `.env`, `docker compose up -d`, then *Materialize all* in Dagster |
 | `trends_l1_raw` fails with many HTTP 429 | Lower `MELI_MAX_WORKERS` (e.g. `2`) |
 | `dagster-code` stays unhealthy | `docker compose logs dagster-code`; the code location prints the import error |

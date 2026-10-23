@@ -28,6 +28,8 @@ x-dagster-environment: &dagster-environment
 
 x-dagster-service: &dagster-service
   image: meli-trends-pipeline/dagster:2.0.0
+  # Local-only image: build it instead of trying to pull it from Docker Hub.
+  pull_policy: build
   build:
     context: .
     dockerfile: docker/dagster/Dockerfile
@@ -152,6 +154,7 @@ services:
 
   superset:
     image: meli-trends-pipeline/superset:4.1.1
+    pull_policy: build
     build:
       context: .
       dockerfile: docker/superset/Dockerfile
