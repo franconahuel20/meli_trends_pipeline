@@ -2,15 +2,17 @@
 
 import csv
 import io
+import posixpath
 import re
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import date, datetime
 
 import pandas as pd
 from dagster import (
     AssetExecutionContext,
     AssetIn,
     AssetKey,
+    Config,
     Failure,
     MaterializeResult,
     MetadataValue,
@@ -18,8 +20,11 @@ from dagster import (
     asset,
 )
 from psycopg2 import sql
+from pydantic import Field
 
 from ..matching import L3_COLUMNS, MatchingConfig, build_matcher, enrich_trends
+from ..matching.enrichment import SOURCE_FILE_COLUMN, SOURCE_ROW_COLUMN
+from ..matching.linguistics import SpacyAnalyzer
 from ..resources import MercadoLibreResource, MinioResource, PostgresResource
 from ..settings import (
     L1_PREFIX,
@@ -48,6 +53,7 @@ L2_RENAME = {
     "Subcategory": "subcategory_str",
 }
 _SUBCATEGORY_CODE = re.compile(r"^M[A-Z]{2}\d+$")
+_PARTITION = re.compile(r"/date_dte=(\d{4}-\d{2}-\d{2})/meli_trends\.parquet$")
 # A run with more failed API calls than this is retried instead of publishing partial data.
 MAX_FAILED_CALL_RATIO = 0.5
 
@@ -86,6 +92,20 @@ def _parquet_bytes(df: pd.DataFrame) -> bytes:
 
 def _partition_key(prefix: str, snapshot_date: str) -> str:
     return f"{prefix}/date_dte={snapshot_date}/meli_trends.parquet"
+
+
+def _l1_key(snapshot_date: date) -> str:
+    return f"{L1_PREFIX}/mercado_libre_trends_{snapshot_date:%d%m%Y}.csv"
+
+
+def _l2_partitions(minio: MinioResource) -> dict[str, str]:
+    """Snapshot date -> L2 parquet key, for every day kept in the data lake."""
+    partitions = {}
+    for key in minio.list_keys(f"{L2_PREFIX}/"):
+        found = _PARTITION.search(key)
+        if found:
+            partitions[found.group(1)] = key
+    return partitions
 
 
 def _read_subcategories(postgres: PostgresResource, selected_only: bool) -> pd.DataFrame:
@@ -185,7 +205,7 @@ def trends_l1_raw(
         )
 
     df = pd.DataFrame(rows, columns=L1_COLUMNS)
-    key = f"{L1_PREFIX}/mercado_libre_trends_{snapshot:%d%m%Y}.csv"
+    key = _l1_key(snapshot.date())
     body = df.to_csv(sep=";", index=False, quoting=csv.QUOTE_MINIMAL).encode("utf-8")
     uri = minio.put_bytes(key, body, "text/csv; charset=utf-8")
     return Output(
@@ -222,10 +242,13 @@ def trends_l2_clean(context: AssetExecutionContext, l1: dict, minio: MinioResour
     df = raw.loc[:, L1_COLUMNS].rename(columns=L2_RENAME)
     for column in df.columns:
         df[column] = df[column].map(lambda v: " ".join(str(v).split()) or None)
+    # Lineage to the raw file: its name and the 0-based row number inside it.
+    df[SOURCE_FILE_COLUMN] = posixpath.basename(l1["key"])
+    df[SOURCE_ROW_COLUMN] = range(len(df))
     df = df[df["keyword_str"].notna()].copy()
     df["date_dte"] = pd.to_datetime(df["date_dte"], errors="raise").dt.date
     before = len(df)
-    df = df.drop_duplicates().reset_index(drop=True)
+    df = df.drop_duplicates(subset=list(L2_RENAME.values())).reset_index(drop=True)
 
     key = _partition_key(L2_PREFIX, l1["snapshot_date"])
     uri = minio.put_bytes(key, _parquet_bytes(df), "application/vnd.apache.parquet")
@@ -244,6 +267,16 @@ def _method_counts(series: pd.Series) -> dict[str, int]:
     return {str(k): int(v) for k, v in series.value_counts(dropna=True).items()}
 
 
+class TrendsL3Config(Config):
+    reprocess_history: bool = Field(
+        default=False,
+        description=(
+            "Re-match every snapshot date kept in L2, not only today's. Use it after changing "
+            "the reference files or the matching word lists; dbt then refreshes those dates."
+        ),
+    )
+
+
 @asset(
     key=L3_KEY,
     ins={"l2": AssetIn(L2_KEY)},
@@ -252,15 +285,19 @@ def _method_counts(series: pd.Series) -> dict[str, int]:
     kinds={"python", "postgres", "s3"},
     description=(
         "Matches each keyword against brands and characters (precision-first rules), adds "
-        "franchise attributes and flags, writes L3 parquet and upserts the snapshot date into "
-        "stg_revenue_research_meli.meli_trends_l3."
+        "franchise attributes, lemmas and flags, writes L3 parquet and upserts the snapshot date "
+        "into stg_revenue_research_meli.meli_trends_l3. Dates kept in L2 but missing from the "
+        "staging table (for example after a layout change) are rebuilt in the same run."
     ),
 )
 def meli_trends_l3(
-    context: AssetExecutionContext, l2: dict, postgres: PostgresResource, minio: MinioResource
+    context: AssetExecutionContext,
+    config: TrendsL3Config,
+    l2: dict,
+    postgres: PostgresResource,
+    minio: MinioResource,
 ) -> MaterializeResult:
     settings = PipelineSettings.from_env()
-    trends = pd.read_parquet(io.BytesIO(minio.get_bytes(l2["key"])))
 
     with postgres.connection() as conn:
         brands = read_dataframe(
@@ -291,51 +328,78 @@ def meli_trends_l3(
         category_terms,
         config=MatchingConfig(fuzzy_enabled=settings.fuzzy_matching_enabled),
     )
-    loaded_at = datetime.now(settings.tz)
-    l3 = enrich_trends(trends, matcher, loaded_at)
-
-    snapshot_date = l2["snapshot_date"]
-    uri = minio.put_bytes(
-        _partition_key(L3_PREFIX, snapshot_date), _parquet_bytes(l3), "application/vnd.apache.parquet"
-    )
+    analyzer = SpacyAnalyzer()
 
     target = qualified(STAGING_SCHEMA, STAGING_TABLE)
-    snapshot_dates = sorted({d.isoformat() for d in l3["date_dte"]})
     with postgres.connection() as conn:
         with conn.cursor() as cur:
             backup = ensure_table(cur, STAGING_SCHEMA, STAGING_TABLE, STAGING_COLUMNS)
             if backup:
-                context.log.warning("Staging table had an old layout; kept it as %s.%s", STAGING_SCHEMA, backup)
+                context.log.warning(
+                    "Staging table had an old layout; kept it as %s.%s and rebuilding every "
+                    "date from L2.", STAGING_SCHEMA, backup,
+                )
             cur.execute(
                 sql.SQL("CREATE INDEX IF NOT EXISTS {} ON {} (date_dte)").format(
                     sql.Identifier(f"ix_{STAGING_TABLE}_date_dte"), target
                 )
             )
-            # Idempotent per snapshot date: a re-run replaces that day only.
-            cur.execute(
-                sql.SQL("DELETE FROM {} WHERE date_dte = ANY(%s::date[])").format(target),
-                (snapshot_dates,),
-            )
-            copy_dataframe(cur, STAGING_SCHEMA, STAGING_TABLE, l3)
+            cur.execute(sql.SQL("SELECT DISTINCT date_dte FROM {}").format(target))
+            loaded = {row[0].isoformat() for row in cur.fetchall()}
         conn.commit()
 
+    snapshot_date = l2["snapshot_date"]
+    partitions = {**_l2_partitions(minio), snapshot_date: l2["key"]}
+    dates = sorted(
+        d for d in partitions if config.reprocess_history or d == snapshot_date or d not in loaded
+    )
+    context.log.info("Matching %s snapshot date(s): %s", len(dates), ", ".join(dates))
+
+    snapshot_l3 = None
+    for day in dates:
+        trends = pd.read_parquet(io.BytesIO(minio.get_bytes(partitions[day])))
+        if SOURCE_FILE_COLUMN not in trends:  # partitions written before lineage was kept
+            trends[SOURCE_FILE_COLUMN] = posixpath.basename(_l1_key(date.fromisoformat(day)))
+        l3 = enrich_trends(trends, matcher, datetime.now(settings.tz), analyzer)
+        minio.put_bytes(
+            _partition_key(L3_PREFIX, day), _parquet_bytes(l3), "application/vnd.apache.parquet"
+        )
+        with postgres.connection() as conn:
+            with conn.cursor() as cur:
+                # Idempotent per snapshot date: a re-run replaces that day only.
+                cur.execute(sql.SQL("DELETE FROM {} WHERE date_dte = %s").format(target), (day,))
+                copy_dataframe(cur, STAGING_SCHEMA, STAGING_TABLE, l3)
+            conn.commit()
+        branded = int((l3["branded_str"] == "Branded").sum())
+        context.log.info(
+            "L3 %s: %s rows, %s with brand, %s branded (%.1f%%)",
+            day, len(l3), int(l3["brand_str"].notna().sum()), branded, 100 * branded / max(len(l3), 1),
+        )
+        if day == snapshot_date:
+            snapshot_l3 = l3
+
+    l3 = snapshot_l3
     branded = int((l3["branded_str"] == "Branded").sum())
     top = (
         l3.loc[l3["branded_str"] == "Branded", ["keyword_str", "brand_str", "character_str"]]
         .value_counts(dropna=False)
         .reset_index(name="rows")
     )
-    context.log.info("L3: %s rows, %s branded (%.1f%%)", len(l3), branded, 100 * branded / max(len(l3), 1))
     return MaterializeResult(
         metadata={
-            "uri": MetadataValue.text(uri),
+            "uri": MetadataValue.text(f"s3://{minio.bucket}/{_partition_key(L3_PREFIX, snapshot_date)}"),
             "rows": MetadataValue.int(len(l3)),
-            "snapshot_dates": MetadataValue.text(", ".join(snapshot_dates)),
+            "snapshot_date": MetadataValue.text(snapshot_date),
+            "processed_dates": MetadataValue.text(", ".join(dates)),
+            "rows_with_brand": MetadataValue.int(int(l3["brand_str"].notna().sum())),
             "branded_rows": MetadataValue.int(branded),
             "branded_share": MetadataValue.float(round(branded / max(len(l3), 1), 4)),
             "brand_matches_by_method": MetadataValue.json(_method_counts(l3["brand_match_method_str"])),
             "character_matches_by_method": MetadataValue.json(
                 _method_counts(l3["character_match_method_str"])
+            ),
+            "top_brands": MetadataValue.json(
+                {str(k): int(v) for k, v in l3["brand_str"].value_counts().head(20).items()}
             ),
             "top_branded_keywords": MetadataValue.md(markdown_table(top, max_rows=20)),
         }

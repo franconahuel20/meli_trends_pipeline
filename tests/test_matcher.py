@@ -1,9 +1,12 @@
 """Unit tests of the matching rules on a small synthetic catalog."""
 
+from dataclasses import replace
+
 import pandas as pd
 import pytest
 
-from meli_trends_pipeline.matching import MatchingConfig, build_matcher, normalize_text
+from meli_trends_pipeline.matching import Lexicon, MatchingConfig, build_matcher, normalize_text
+from meli_trends_pipeline.matching.lexicon import parse_brand_rule
 
 BRANDS = pd.DataFrame(
     {
@@ -44,9 +47,15 @@ CHARACTERS = pd.DataFrame(
 )
 
 
+# The core rules are tested without the curated brand rules of wordlists/brand_rules.txt.
+CORE_LEXICON = replace(Lexicon.load(), brand_rules=())
+
+
 @pytest.fixture(scope="module")
 def matcher():
-    return build_matcher(BRANDS, CHARACTERS, ["Juegos y Juguetes", "Celulares y Smartphones"])
+    return build_matcher(
+        BRANDS, CHARACTERS, ["Juegos y Juguetes", "Celulares y Smartphones"], lexicon=CORE_LEXICON
+    )
 
 
 def match(matcher, *keywords):
@@ -123,10 +132,21 @@ def test_ambiguity_is_shared_by_spellings(matcher):
     assert match(matcher, "bigbang theory", "big bang")["bigbang theory"] == ([], [])
 
 
-def test_character_plural_variant_but_not_for_brands(matcher):
-    result = match(matcher, "peluche minion", "pochoclera minions", "camiseta pumas")
+def test_character_plural_variant(matcher):
+    result = match(matcher, "peluche minion", "pochoclera minions")
     assert result["peluche minion"][1] == ["Minions"]
-    assert result["camiseta pumas"] == ([], [])  # "pumas" is a club, not Puma
+
+
+def test_brand_plural_needs_the_brand_in_the_batch(matcher):
+    assert match(matcher, "legos star wars")["legos star wars"][0] == []
+    backed = match(matcher, "legos star wars", "lego city")
+    assert backed["legos star wars"][0] == ["Lego"]
+
+
+def test_brand_plural_that_is_a_word_is_skipped(matcher):
+    # "pumas" is the football club; it is a protected word.
+    result = match(matcher, "camiseta pumas", "zapatillas puma")
+    assert result["camiseta pumas"] == ([], [])
 
 
 def test_one_word_variant_needs_the_listed_form_in_the_batch(matcher):
@@ -195,6 +215,73 @@ def test_nested_related_match_is_kept(matcher):
 
 
 def test_fuzzy_can_be_disabled():
-    strict = build_matcher(BRANDS, CHARACTERS, config=MatchingConfig(fuzzy_enabled=False))
+    strict = build_matcher(
+        BRANDS, CHARACTERS, lexicon=CORE_LEXICON, config=MatchingConfig(fuzzy_enabled=False)
+    )
     results = strict.match_keywords(["peluche stitch", "mochila stitch", "peluche stich"])
     assert results["peluche stich"].characters == ()
+
+
+RULES = [
+    "iphone | Apple",
+    "galaxy # | Samsung",
+    "switch | Nintendo | Consolas y Videojuegos",
+    "polo | Polo | Ropa y Accesorios",
+    "hp | HP",
+]
+
+
+@pytest.fixture(scope="module")
+def ruled():
+    lexicon = replace(CORE_LEXICON, brand_rules=tuple(parse_brand_rule(r) for r in RULES))
+    return build_matcher(BRANDS, CHARACTERS, lexicon=lexicon)
+
+
+def brand_names(found):
+    return [m.entity.name for m in found.brands]
+
+
+def test_parse_brand_rule():
+    rule = parse_brand_rule("Galaxy # | Samsung | Celulares y Teléfonos; Computación")
+    assert rule.tokens == ("galaxy", "#") and rule.brand == "Samsung"
+    assert rule.categories == {"celulares y telefonos", "computacion"}
+    assert parse_brand_rule("iphone | Apple").categories is None
+    for bad in ("iphone", "| Apple", "# 5 | Apple", "a | b | c | d"):
+        with pytest.raises(ValueError):
+            parse_brand_rule(bad)
+
+
+def test_product_line_rule(ruled):
+    assert brand_names(ruled.match_keywords(["iphone 15 pro max"])["iphone 15 pro max"]) == ["Apple"]
+
+
+def test_model_code_wildcard_needs_a_digit(ruled):
+    results = ruled.match_keywords(["galaxy s24 ultra", "galaxy a55", "proyector galaxy"])
+    assert brand_names(results["galaxy s24 ultra"]) == ["Samsung"]
+    assert brand_names(results["galaxy a55"]) == ["Samsung"]
+    assert brand_names(results["proyector galaxy"]) == []
+
+
+def test_category_rule_only_fires_in_its_categories(ruled):
+    results = ruled.match_pairs(
+        [
+            ("joystick switch", "Consolas y Videojuegos"),
+            ("switch usb", "Computación"),
+            ("remera polo", "Ropa y Accesorios"),
+            ("remera polo", "Deportes y Fitness"),
+        ]
+    )
+    assert brand_names(results[("joystick switch", "consolas y videojuegos")]) == ["Nintendo"]
+    assert brand_names(results[("switch usb", "computacion")]) == []
+    # The rule replaces the ambiguous master-list entry "Polo" inside its category only.
+    assert brand_names(results[("remera polo", "ropa y accesorios")]) == ["Polo"]
+    assert brand_names(results[("remera polo", "deportes y fitness")]) == []
+    # Without a category the restricted rules never fire.
+    assert brand_names(ruled.match_keywords(["joystick switch"])["joystick switch"]) == []
+
+
+def test_rule_keeps_the_unit_guard(ruled):
+    results = ruled.match_keywords(["impresora hp", "motor 2 hp"])
+    assert brand_names(results["impresora hp"]) == ["HP"]
+    assert brand_names(results["motor 2 hp"]) == []
+

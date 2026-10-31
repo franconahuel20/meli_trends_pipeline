@@ -3,6 +3,9 @@
 # The typo step never rewrites these words into a character name.
 # Generated from data/input/characters.xlsx and spelling dictionaries; regenerate
 # when characters are added. One normalized term per line.
+# The same list stops brand plurals that are words of their own: "googles" (swimming
+# goggles) is not Google, "toppers" (cake toppers) is not Topper, "pumas" is the club.
+# Those hand-added entries are at the end of the file.
 
 abadar
 abela
@@ -3259,3 +3262,6 @@ zuda
 zumba
 zura
 zuro
+googles
+toppers
+pumas

@@ -1,0 +1,44 @@
+slice_name: Búsquedas Branded / Unbranded
+description: null
+certified_by: null
+certification_details: null
+viz_type: pie
+params:
+  viz_type: pie
+  adhoc_filters:
+  - clause: WHERE
+    subject: date_dte
+    operator: TEMPORAL_RANGE
+    comparator: No filter
+    expressionType: SIMPLE
+    isExtra: false
+    isNew: false
+    sqlExpression: null
+    filterOptionName: filter_3304b23422
+  extra_form_data: {}
+  dashboards: []
+  groupby:
+  - branded_str
+  metric: count
+  row_limit: 25
+  sort_by_metric: true
+  color_scheme: supersetColors
+  show_labels_threshold: 3
+  show_legend: true
+  legendType: scroll
+  legendOrientation: right
+  label_type: percent
+  number_format: SMART_NUMBER
+  date_format: smart_date
+  show_labels: true
+  labels_outside: true
+  label_line: true
+  outerRadius: 70
+  donut: true
+  innerRadius: 40
+  show_total: false
+query_context: null
+cache_timeout: null
+uuid: 159189ab-0e70-54f3-b8b6-3facd27d419a
+version: 1.0.0
+dataset_uuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1

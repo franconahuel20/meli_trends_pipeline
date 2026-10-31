@@ -16,3 +16,7 @@ rapidfuzz==3.14.3
 Unidecode==1.4.0
 tzdata==2025.2
 pytest==8.4.2
+# Lemmas and nouns of the keywords (lemmatized_keyword_str, nouns_keyword_str).
+spacy==3.8.18
+es_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.8.0/es_core_news_sm-3.8.0-py3-none-any.whl#sha256=e451a83d6df79b87e9eed0cb553f03e99e36a3bab18a7b79f0dcfd1fdf875e12
+pt_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-3.8.0/pt_core_news_sm-3.8.0-py3-none-any.whl#sha256=c304fa04db3af73cd08a250feacf560506e15a2ec2469bd1b09f06847f6b455c

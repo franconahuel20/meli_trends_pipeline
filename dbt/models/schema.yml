@@ -1,37 +1,82 @@
 version: 2
 
+# The columns are listed in table order: the Dagster dbt asset compares this list with the
+# existing table and rebuilds it (full refresh) when the layout changed.
 models:
   - name: trends
     description: >
-      Final analytical table (mdm_revenue_research_meli.trends) used by Superset: one row per
-      trend keyword, subcategory and day, enriched with brand, character and franchise matches.
-      Incremental by date_dte, so history accumulates day after day.
+      Final analytical table (mdm_revenue_research_meli.trends) used by Superset, built from
+      stg_revenue_research_meli.meli_trends_l3 with the layout of the business `trends`
+      extract: one row per trend keyword, subcategory and day, enriched with brand, character,
+      franchise, lemmas and flags. Incremental by date_dte, so history accumulates day after day.
     columns:
       - name: keyword_str
         description: "Keyword as returned by the Mercado Libre trends API."
         data_tests:
           - not_null
+      - name: url_str
+        description: "Mercado Libre search URL of the keyword."
       - name: date_dte
         description: "Snapshot date (pipeline time zone)."
         data_tests:
           - not_null
-      - name: week_dte
-        description: "Monday of the snapshot week."
       - name: country_str
-        data_tests:
-          - not_null
-      - name: brand_str
-        description: "Brand found in the keyword (precision-first matching)."
-      - name: character_str
-        description: "Character found in the keyword; franchise columns come from it."
-      - name: branded_str
-        description: "'Branded' when a brand or a character was found."
         data_tests:
           - not_null
           - accepted_values:
               arguments:
-                values: ["Branded", "Unbranded"]
-      - name: has_brand_str
+                values: ["Argentina", "Brasil", "Chile", "Colombia", "Mexico"]
+      - name: category_str
+        description: "Homologated category (mercado_libre_subcat.xlsx)."
+      - name: subcategory_str
+        description: "Homologated subcategory (mercado_libre_subcat.xlsx)."
+      - name: _internal_filename_str
+        description: "Raw L1 file in MinIO the row was extracted to."
+      - name: loading_dtm
+        description: "When the row was (re)matched and loaded into staging."
+      - name: file_row_id_int
+        description: "0-based row number inside the raw L1 file."
+      - name: brand_str
+        description: "Brand found in the keyword (master list plus curated brand rules)."
+      - name: character_str
+        description: "Character found in the keyword; owner and franchise columns come from it."
+      - name: second_brand_str
+        description: "Another brand named in the same keyword."
+      - name: group_company_owner_rights_str
+        description: "Company that owns the character rights."
+      - name: twdc_int
+        description: "1 when the character belongs to The Walt Disney Company."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+      - name: franchise_n1_str
+      - name: franchise_n2_str
+      - name: franchise_n3_str
+      - name: content_str
+      - name: keyword_in_spanish_str
+        description: "Keyword used for the Spanish text columns (the keyword itself; not translated)."
+      - name: week_dte
+        description: "Monday of the snapshot week."
+        data_tests:
+          - not_null
+      - name: normalized_keyword_es_str
+        description: "Lowercase keyword without accents (ñ kept) or punctuation."
+      - name: keyword_es_without_stopwords_str
+        description: "Normalized keyword without stopwords."
+      - name: character_without_stopwords_str
+        description: "Normalized character name without stopwords."
+      - name: lemmatized_keyword_str
+        description: "Keyword lemmatized with spaCy (Spanish model; Portuguese model for Brasil)."
+      - name: nouns_keyword_str
+        description: "Lemmas of the nouns of the keyword, without the brand/character words."
+      - name: has_franchise_n2_str
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["YES", "NO"]
+      - name: has_franchise_n3_str
         data_tests:
           - accepted_values:
               arguments:
@@ -41,15 +86,23 @@ models:
           - accepted_values:
               arguments:
                 values: ["YES", "NO"]
-      - name: brand_match_method_str
-        description: "How the brand was matched: exact, compact (spacing) or fuzzy (one-letter typo)."
+      - name: has_franchise_n1_str
         data_tests:
           - accepted_values:
               arguments:
-                values: ["exact", "compact", "fuzzy"]
-      - name: character_match_method_str
-        description: "How the character was matched: exact, compact, variant (singular/plural) or fuzzy."
+                values: ["YES", "NO"]
+      - name: has_brand_str
         data_tests:
           - accepted_values:
               arguments:
-                values: ["exact", "compact", "variant", "fuzzy"]
+                values: ["YES", "NO"]
+      - name: branded_str
+        description: "'Branded' when a brand or a character was found."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Branded", "Unbranded"]
+      - name: year_calendar_int
+      - name: month_calendar_int
+      - name: day_calendar_int

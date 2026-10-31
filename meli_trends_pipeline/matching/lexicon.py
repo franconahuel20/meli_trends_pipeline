@@ -13,19 +13,56 @@ from typing import Iterable
 from .text import has_digit, normalize_text
 
 _WORDLISTS_PACKAGE = "meli_trends_pipeline.matching.wordlists"
+# In a brand rule alias, stands for one model code: a token with a digit ("s24", "a55", "4").
+MODEL_WILDCARD = "#"
+
+
+def _read_lines(file_name: str) -> list[str]:
+    content = resources.files(_WORDLISTS_PACKAGE).joinpath(file_name).read_text(encoding="utf-8")
+    lines = (line.strip() for line in content.splitlines())
+    return [line for line in lines if line and not line.startswith("#")]
 
 
 def _read_terms(file_name: str) -> frozenset[str]:
-    content = resources.files(_WORDLISTS_PACKAGE).joinpath(file_name).read_text(encoding="utf-8")
-    terms = set()
-    for line in content.splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        term = normalize_text(line)
-        if term:
-            terms.add(term)
-    return frozenset(terms)
+    return frozenset(term for term in map(normalize_text, _read_lines(file_name)) if term)
+
+
+@dataclass(frozen=True)
+class BrandRule:
+    """An extra way of naming a brand: a product line ("iphone" -> Apple), a spelling the
+    master list lacks ("victoria secret") or a brand that is only safe in some categories
+    ("wilson" in Deportes y Fitness)."""
+
+    tokens: tuple[str, ...]
+    brand: str
+    # Normalized category names; None means every category.
+    categories: frozenset[str] | None = None
+
+
+def _alias_tokens(alias: str) -> tuple[str, ...]:
+    return tuple(
+        MODEL_WILDCARD if part == MODEL_WILDCARD else token
+        for part in alias.split()
+        for token in ((part,) if part == MODEL_WILDCARD else normalize_text(part).split())
+    )
+
+
+def parse_brand_rule(line: str) -> BrandRule:
+    """Parse ``alias | Brand | Category; Category`` (the categories part is optional)."""
+    parts = [p.strip() for p in line.split("|")]
+    if len(parts) not in (2, 3) or not parts[0] or not parts[1]:
+        raise ValueError(f"Invalid brand rule {line!r}: expected 'alias | Brand [| categories]'")
+    tokens = _alias_tokens(parts[0])
+    if not tokens or tokens[0] == MODEL_WILDCARD:
+        raise ValueError(f"Invalid brand rule {line!r}: the alias must start with a word")
+    categories = None
+    if len(parts) == 3 and parts[2]:
+        categories = frozenset(normalize_text(c) for c in parts[2].split(";") if normalize_text(c))
+    return BrandRule(tokens=tokens, brand=parts[1], categories=categories)
+
+
+def _read_brand_rules(file_name: str) -> tuple[BrandRule, ...]:
+    return tuple(parse_brand_rule(line) for line in _read_lines(file_name))
 
 
 @dataclass(frozen=True)
@@ -38,6 +75,7 @@ class Lexicon:
     trusted_characters: frozenset[str]
     # Real words that must never be typo-corrected into a character name.
     fuzzy_protected: frozenset[str] = frozenset()
+    brand_rules: tuple[BrandRule, ...] = ()
 
     @classmethod
     def load(cls) -> "Lexicon":
@@ -49,6 +87,7 @@ class Lexicon:
             trusted_brands=_read_terms("trusted_brands.txt"),
             trusted_characters=_read_terms("trusted_characters.txt"),
             fuzzy_protected=_read_terms("fuzzy_protected_words.txt"),
+            brand_rules=_read_brand_rules("brand_rules.txt"),
         )
 
     def with_generic_terms(self, terms: Iterable[str]) -> "Lexicon":

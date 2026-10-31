@@ -1,0 +1,1959 @@
+dashboard_title: Revenue Research - Mercado Libre Trends
+description: null
+css: ''
+slug: meli-trends
+certified_by: null
+certification_details: null
+published: true
+uuid: b1077a9f-245a-5d19-a186-2fdbc5f27a41
+position:
+  DASHBOARD_VERSION_KEY: v2
+  ROOT_ID:
+    type: ROOT
+    id: ROOT_ID
+    children:
+    - TABS-main
+  HEADER_ID:
+    id: HEADER_ID
+    type: HEADER
+    meta:
+      text: Revenue Research - Mercado Libre Trends
+  TABS-main:
+    type: TABS
+    id: TABS-main
+    children:
+    - TAB-26747dcf98
+    - TAB-a8aa03c342
+    - TAB-ebd6a43f35
+    - TAB-be17c8c6bc
+    - TAB-68042d0ddf
+    - TAB-efd01d0fae
+    - TAB-9e698480ff
+    parents:
+    - ROOT_ID
+    meta: {}
+  TAB-26747dcf98:
+    type: TAB
+    id: TAB-26747dcf98
+    children:
+    - ROW-62cf94e1c3
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Read Me
+      defaultText: Tab title
+      placeholder: Tab title
+  ROW-62cf94e1c3:
+    type: ROW
+    id: ROW-62cf94e1c3
+    children:
+    - MARKDOWN-8832576114
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-26747dcf98
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-8832576114:
+    type: MARKDOWN
+    id: MARKDOWN-8832576114
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-26747dcf98
+    - ROW-62cf94e1c3
+    meta:
+      width: 12
+      height: 110
+      code: "### Condiciones Generales\n\nSe descargan **diariamente las tendencias de Mercado Libre** para las subcategorías seleccionadas\ndel portal, de los países **Argentina, Brasil, Chile, Colombia y México**.\n\n**Landscape competitivo:** para clasificar las tendencias y encontrar oportunidades de negocio se\nusa un glosario de:\n\n- **Franquicias:** Empresa/owner, Contenido, Personajes.\n- **Marcas:** participación de las marcas en relación a las franquicias.\n\n#### Objetivos por pestaña\n\n- **Summary:** mirada inicial del mercado de búsquedas.\n- **Market Landscape:** posicionamiento de TWDC en el mercado competitivo.\n- **Franchise:** visualización y relevancia de las franquicias de TWDC.\n- **Categories:** apertura por categoría comercial de la información relevada.\n- **Subcategories:** subcategorías dentro de las categorías.\n- **Products and Trends:** relevancia de los sustantivos buscados.\n\n#### Consideraciones generales\n\n- **Búsquedas:** cantidad de veces que una keyword\
+        \ aparece en las tendencias (keyword × subcategoría × día).\n- **Branded:** tendencia que tiene una empresa / contenido / franquicia / personaje y/o marca.\n- **Fecha:** por defecto se agrupa en semanas, representadas con la fecha del día lunes\n  (filtro *Timeframe* para pasar a meses).\n- **Franquicias:** consideran marcas con contenidos (Barbie, Lego, similar).\n- **Grupo Empresa Owner Derechos:** clasificación general de la empresa dueña de los derechos.\n- **Franquicia Nivel 1:** clasificación de franquicias de marketing.\n- **Franquicia Nivel 2:** incluye todas las aperturas desde sagas.\n- **Contenido:** desagrega donde es posible las sagas por película u otro tipo de contenido.\n- **Producto:** primer sustantivo de la búsqueda (lematizado), sin la marca ni el personaje.\n\nDatos: tabla `mdm_revenue_research_meli.trends` (dbt), actualizada todos los días por Dagster.\n"
+  TAB-a8aa03c342:
+    type: TAB
+    id: TAB-a8aa03c342
+    children:
+    - HEADER-879972e2dd
+    - ROW-d9e8dd3662
+    - HEADER-ff995f994d
+    - ROW-02a98b7683
+    - ROW-0565707070
+    - HEADER-5e87eb15d3
+    - ROW-6642acabe1
+    - ROW-9309fe42e3
+    - ROW-559e4c3c3a
+    - ROW-f155beb85d
+    - ROW-20f3407c31
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Summary
+      defaultText: Tab title
+      placeholder: Tab title
+  HEADER-879972e2dd:
+    type: HEADER
+    id: HEADER-879972e2dd
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      text: Summary - Total Trends
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-d9e8dd3662:
+    type: ROW
+    id: ROW-d9e8dd3662
+    children:
+    - CHART-8d000e4f6b
+    - CHART-c66eba82c3
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-8d000e4f6b:
+    type: CHART
+    id: CHART-8d000e4f6b
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-d9e8dd3662
+    meta:
+      width: 4
+      height: 56
+      chartId: 1
+      uuid: 159189ab-0e70-54f3-b8b6-3facd27d419a
+      sliceName: Búsquedas Branded / Unbranded
+  CHART-c66eba82c3:
+    type: CHART
+    id: CHART-c66eba82c3
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-d9e8dd3662
+    meta:
+      width: 8
+      height: 56
+      chartId: 2
+      uuid: a005bbb3-98c1-58c4-9c57-5aa53dc26792
+      sliceName: Categorías - Top 10 Total Trends
+  HEADER-ff995f994d:
+    type: HEADER
+    id: HEADER-ff995f994d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      text: Branded Trends
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-02a98b7683:
+    type: ROW
+    id: ROW-02a98b7683
+    children:
+    - CHART-af2ab3e3f1
+    - CHART-a5643f5200
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-af2ab3e3f1:
+    type: CHART
+    id: CHART-af2ab3e3f1
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-02a98b7683
+    meta:
+      width: 8
+      height: 56
+      chartId: 3
+      uuid: b66d8632-ae58-55bc-8e92-ed09dfe0e1c7
+      sliceName: Categorías - Top 10 Branded
+  CHART-a5643f5200:
+    type: CHART
+    id: CHART-a5643f5200
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-02a98b7683
+    meta:
+      width: 4
+      height: 56
+      chartId: 4
+      uuid: fc4fdb91-27d1-5426-851b-5a8207ee91b0
+      sliceName: Búsquedas Franquicias
+  ROW-0565707070:
+    type: ROW
+    id: ROW-0565707070
+    children:
+    - CHART-0fa6aa9e50
+    - CHART-f930b07afd
+    - CHART-4d94b9c0d1
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-0fa6aa9e50:
+    type: CHART
+    id: CHART-0fa6aa9e50
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-0565707070
+    meta:
+      width: 4
+      height: 56
+      chartId: 5
+      uuid: 3c45f591-6d61-56e8-ac52-df75b082ae86
+      sliceName: TOP 10 Marcas
+  CHART-f930b07afd:
+    type: CHART
+    id: CHART-f930b07afd
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-0565707070
+    meta:
+      width: 4
+      height: 56
+      chartId: 6
+      uuid: 0f8f5a1a-b653-556a-9692-cc42244af3cf
+      sliceName: TOP 10 Franquicias (Nivel 1)
+  CHART-4d94b9c0d1:
+    type: CHART
+    id: CHART-4d94b9c0d1
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-0565707070
+    meta:
+      width: 4
+      height: 56
+      chartId: 7
+      uuid: 94e52ef2-2a2f-5f2e-855a-3f77fe4c1f29
+      sliceName: TOP 10 Personajes
+  HEADER-5e87eb15d3:
+    type: HEADER
+    id: HEADER-5e87eb15d3
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      text: Unbranded Trends
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-6642acabe1:
+    type: ROW
+    id: ROW-6642acabe1
+    children:
+    - CHART-fb9c0a95a1
+    - CHART-b5f667282d
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-fb9c0a95a1:
+    type: CHART
+    id: CHART-fb9c0a95a1
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-6642acabe1
+    meta:
+      width: 6
+      height: 56
+      chartId: 8
+      uuid: e8b0e8f9-0049-5970-9b3a-f04c3b612442
+      sliceName: Top 25 de Tendencias
+  CHART-b5f667282d:
+    type: CHART
+    id: CHART-b5f667282d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-6642acabe1
+    meta:
+      width: 6
+      height: 56
+      chartId: 9
+      uuid: 23afffba-456d-5634-98c5-2f0bc8fd1d11
+      sliceName: WordCloud Productos
+  ROW-9309fe42e3:
+    type: ROW
+    id: ROW-9309fe42e3
+    children:
+    - CHART-df3b8ef2fd
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-df3b8ef2fd:
+    type: CHART
+    id: CHART-df3b8ef2fd
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-9309fe42e3
+    meta:
+      width: 12
+      height: 56
+      chartId: 10
+      uuid: ea04c7b6-b478-54ce-857a-9722f773358b
+      sliceName: Categorías Totales
+  ROW-559e4c3c3a:
+    type: ROW
+    id: ROW-559e4c3c3a
+    children:
+    - CHART-59a63d9654
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-59a63d9654:
+    type: CHART
+    id: CHART-59a63d9654
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-559e4c3c3a
+    meta:
+      width: 12
+      height: 56
+      chartId: 11
+      uuid: 42ef057b-17ec-53b0-b6da-b3d62935b70a
+      sliceName: Evolución de Top Categorías
+  ROW-f155beb85d:
+    type: ROW
+    id: ROW-f155beb85d
+    children:
+    - CHART-ae5f1eac95
+    - CHART-2b6225c19b
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-ae5f1eac95:
+    type: CHART
+    id: CHART-ae5f1eac95
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-f155beb85d
+    meta:
+      width: 6
+      height: 56
+      chartId: 12
+      uuid: 599038a5-dc42-5602-9eed-a4ac0a91b637
+      sliceName: Categorías Totales Branded
+  CHART-2b6225c19b:
+    type: CHART
+    id: CHART-2b6225c19b
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-f155beb85d
+    meta:
+      width: 6
+      height: 56
+      chartId: 13
+      uuid: 2ce67603-e098-5242-87e4-06498d6ad3f0
+      sliceName: Categorías Totales Unbranded
+  ROW-20f3407c31:
+    type: ROW
+    id: ROW-20f3407c31
+    children:
+    - MARKDOWN-2b9377f302
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-2b9377f302:
+    type: MARKDOWN
+    id: MARKDOWN-2b9377f302
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-a8aa03c342
+    - ROW-20f3407c31
+    meta:
+      width: 12
+      height: 8
+      code: 'Fuente: Revenue Research - API Tendencias de Mercado Libre - Arg/Bra/Chi/Col/Méx'
+  TAB-ebd6a43f35:
+    type: TAB
+    id: TAB-ebd6a43f35
+    children:
+    - HEADER-779e3547a2
+    - ROW-e622e3cc65
+    - ROW-5880cc4531
+    - ROW-2f58d665e6
+    - ROW-654e745bd8
+    - ROW-e95878f247
+    - ROW-b0ec97aadd
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Market Landscape
+      defaultText: Tab title
+      placeholder: Tab title
+  HEADER-779e3547a2:
+    type: HEADER
+    id: HEADER-779e3547a2
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      text: Market Landscape
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-e622e3cc65:
+    type: ROW
+    id: ROW-e622e3cc65
+    children:
+    - CHART-8ca9b584a6
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-8ca9b584a6:
+    type: CHART
+    id: CHART-8ca9b584a6
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-e622e3cc65
+    meta:
+      width: 12
+      height: 56
+      chartId: 14
+      uuid: 1906ee1b-9b6d-5f11-bb52-a5732dbb7de4
+      sliceName: Tendencias - Principales Compañías
+  ROW-5880cc4531:
+    type: ROW
+    id: ROW-5880cc4531
+    children:
+    - CHART-40102d9a39
+    - CHART-aa68f990d9
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-40102d9a39:
+    type: CHART
+    id: CHART-40102d9a39
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-5880cc4531
+    meta:
+      width: 6
+      height: 56
+      chartId: 15
+      uuid: 2a6d5d39-f6f2-5997-9c43-48c734b25eaf
+      sliceName: Share de demanda - Compañía
+  CHART-aa68f990d9:
+    type: CHART
+    id: CHART-aa68f990d9
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-5880cc4531
+    meta:
+      width: 6
+      height: 56
+      chartId: 16
+      uuid: 3a39a647-c407-5ffc-b007-659a020e4a49
+      sliceName: Compañías por País
+  ROW-2f58d665e6:
+    type: ROW
+    id: ROW-2f58d665e6
+    children:
+    - CHART-d08a63598a
+    - CHART-e09797e573
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-d08a63598a:
+    type: CHART
+    id: CHART-d08a63598a
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-2f58d665e6
+    meta:
+      width: 6
+      height: 56
+      chartId: 17
+      uuid: 89262d90-0324-5e8d-abce-a386564d9a9e
+      sliceName: Share categorías brandeadas
+  CHART-e09797e573:
+    type: CHART
+    id: CHART-e09797e573
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-2f58d665e6
+    meta:
+      width: 6
+      height: 56
+      chartId: 18
+      uuid: 9810f469-9e20-52ac-bda0-15d7be2b71c4
+      sliceName: WordCloud Personajes
+  ROW-654e745bd8:
+    type: ROW
+    id: ROW-654e745bd8
+    children:
+    - CHART-3d7c08338d
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-3d7c08338d:
+    type: CHART
+    id: CHART-3d7c08338d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-654e745bd8
+    meta:
+      width: 12
+      height: 56
+      chartId: 19
+      uuid: 315e8aa6-0488-52d8-981d-c5fc860e6acb
+      sliceName: Categorías por compañía
+  ROW-e95878f247:
+    type: ROW
+    id: ROW-e95878f247
+    children:
+    - CHART-02ba0892de
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-02ba0892de:
+    type: CHART
+    id: CHART-02ba0892de
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-e95878f247
+    meta:
+      width: 12
+      height: 56
+      chartId: 20
+      uuid: 1c349a9e-fc9d-54d6-92a2-f956000bb94b
+      sliceName: TOP 5 - Marcas asociadas a TWDC
+  ROW-b0ec97aadd:
+    type: ROW
+    id: ROW-b0ec97aadd
+    children:
+    - MARKDOWN-d6dc6fe827
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-d6dc6fe827:
+    type: MARKDOWN
+    id: MARKDOWN-d6dc6fe827
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-ebd6a43f35
+    - ROW-b0ec97aadd
+    meta:
+      width: 12
+      height: 8
+      code: 'Fuente: Revenue Research - API Tendencias de Mercado Libre - Arg/Bra/Chi/Col/Méx'
+  TAB-be17c8c6bc:
+    type: TAB
+    id: TAB-be17c8c6bc
+    children:
+    - HEADER-63d4ae5420
+    - ROW-2bea6019ec
+    - ROW-5110be0cb2
+    - ROW-bc9c8de3e3
+    - ROW-ffbac42afb
+    - ROW-8a87c192e3
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Franchise
+      defaultText: Tab title
+      placeholder: Tab title
+  HEADER-63d4ae5420:
+    type: HEADER
+    id: HEADER-63d4ae5420
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    meta:
+      text: Franquicias
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-2bea6019ec:
+    type: ROW
+    id: ROW-2bea6019ec
+    children:
+    - CHART-f441c84ea7
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-f441c84ea7:
+    type: CHART
+    id: CHART-f441c84ea7
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-2bea6019ec
+    meta:
+      width: 12
+      height: 56
+      chartId: 21
+      uuid: 269a22d0-6451-546f-8fe9-7b8bc6515ff2
+      sliceName: Tendencias - Franquicias TWDC (Nivel 1)
+  ROW-5110be0cb2:
+    type: ROW
+    id: ROW-5110be0cb2
+    children:
+    - CHART-ec9af6ecf7
+    - CHART-975f11138d
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-ec9af6ecf7:
+    type: CHART
+    id: CHART-ec9af6ecf7
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-5110be0cb2
+    meta:
+      width: 6
+      height: 56
+      chartId: 22
+      uuid: f44ce90d-30c4-5553-bca7-1805bb15144f
+      sliceName: Franquicias por país (Nivel 1)
+  CHART-975f11138d:
+    type: CHART
+    id: CHART-975f11138d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-5110be0cb2
+    meta:
+      width: 6
+      height: 56
+      chartId: 23
+      uuid: 547c8b7e-bd5a-5ad1-a202-305e34810874
+      sliceName: Principales categorías por franquicias (Nivel 1)
+  ROW-bc9c8de3e3:
+    type: ROW
+    id: ROW-bc9c8de3e3
+    children:
+    - CHART-026a317b61
+    - CHART-96a6e70b6e
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-026a317b61:
+    type: CHART
+    id: CHART-026a317b61
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-bc9c8de3e3
+    meta:
+      width: 6
+      height: 56
+      chartId: 24
+      uuid: 2421340f-42e1-5270-a74e-1b1967d42dca
+      sliceName: Franquicias (Nivel 1) por Franquicias (Nivel 2)
+  CHART-96a6e70b6e:
+    type: CHART
+    id: CHART-96a6e70b6e
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-bc9c8de3e3
+    meta:
+      width: 6
+      height: 56
+      chartId: 25
+      uuid: 75fab1dd-374f-5b2a-a69c-7ce76692c545
+      sliceName: Share por Franquicias (Nivel 2)
+  ROW-ffbac42afb:
+    type: ROW
+    id: ROW-ffbac42afb
+    children:
+    - CHART-adbd9506f6
+    - CHART-e7e085f77d
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-adbd9506f6:
+    type: CHART
+    id: CHART-adbd9506f6
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-ffbac42afb
+    meta:
+      width: 6
+      height: 56
+      chartId: 26
+      uuid: 00112d70-50dc-55f7-97bb-9242ffb842b7
+      sliceName: Franquicias (Nivel 2) por país
+  CHART-e7e085f77d:
+    type: CHART
+    id: CHART-e7e085f77d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-ffbac42afb
+    meta:
+      width: 6
+      height: 56
+      chartId: 27
+      uuid: d635fda9-d967-59ae-a766-e9ddf1eff4cc
+      sliceName: Franquicias (Nivel 2) por Contenido
+  ROW-8a87c192e3:
+    type: ROW
+    id: ROW-8a87c192e3
+    children:
+    - MARKDOWN-2dff2b7356
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-2dff2b7356:
+    type: MARKDOWN
+    id: MARKDOWN-2dff2b7356
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-be17c8c6bc
+    - ROW-8a87c192e3
+    meta:
+      width: 12
+      height: 8
+      code: 'Fuente: Revenue Research - API Tendencias de Mercado Libre - Arg/Bra/Chi/Col/Méx'
+  TAB-68042d0ddf:
+    type: TAB
+    id: TAB-68042d0ddf
+    children:
+    - HEADER-5a51885cf7
+    - ROW-8c6e7a479b
+    - ROW-214a9cc6ee
+    - ROW-78a62dc4b9
+    - ROW-875f2f1e1c
+    - ROW-a7fa0f45a1
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Categories
+      defaultText: Tab title
+      placeholder: Tab title
+  HEADER-5a51885cf7:
+    type: HEADER
+    id: HEADER-5a51885cf7
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    meta:
+      text: Categoría
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-8c6e7a479b:
+    type: ROW
+    id: ROW-8c6e7a479b
+    children:
+    - CHART-23f145982d
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-23f145982d:
+    type: CHART
+    id: CHART-23f145982d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-8c6e7a479b
+    meta:
+      width: 12
+      height: 56
+      chartId: 28
+      uuid: dad0327e-a1d7-5984-9c3f-67f278f16d9f
+      sliceName: Tendencias de búsquedas brandeadas por país
+  ROW-214a9cc6ee:
+    type: ROW
+    id: ROW-214a9cc6ee
+    children:
+    - CHART-d33dafec3b
+    - CHART-4d3383fbb4
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-d33dafec3b:
+    type: CHART
+    id: CHART-d33dafec3b
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-214a9cc6ee
+    meta:
+      width: 6
+      height: 56
+      chartId: 29
+      uuid: deb3ff67-84ce-58b0-b486-43cf34a1354f
+      sliceName: Share por Compañía
+  CHART-4d3383fbb4:
+    type: CHART
+    id: CHART-4d3383fbb4
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-214a9cc6ee
+    meta:
+      width: 6
+      height: 56
+      chartId: 30
+      uuid: 0875c806-77c9-500c-91e7-402a9416ab32
+      sliceName: Compañías por País
+  ROW-78a62dc4b9:
+    type: ROW
+    id: ROW-78a62dc4b9
+    children:
+    - CHART-6b3795b46e
+    - CHART-db1c3f4bca
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-6b3795b46e:
+    type: CHART
+    id: CHART-6b3795b46e
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-78a62dc4b9
+    meta:
+      width: 6
+      height: 56
+      chartId: 31
+      uuid: 43343660-8bc1-553d-a2e4-b38d1f42c127
+      sliceName: Franquicias Nivel 1
+  CHART-db1c3f4bca:
+    type: CHART
+    id: CHART-db1c3f4bca
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-78a62dc4b9
+    meta:
+      width: 6
+      height: 56
+      chartId: 32
+      uuid: bc35cb57-4fa5-5903-919d-5b7e6fbefa32
+      sliceName: Franquicias Nivel 2 por país
+  ROW-875f2f1e1c:
+    type: ROW
+    id: ROW-875f2f1e1c
+    children:
+    - CHART-4fe97a28ab
+    - CHART-4f11b75717
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-4fe97a28ab:
+    type: CHART
+    id: CHART-4fe97a28ab
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-875f2f1e1c
+    meta:
+      width: 6
+      height: 56
+      chartId: 33
+      uuid: c73b6483-bf9f-5c9f-a431-539664a9cd3b
+      sliceName: Top 10 de Tendencias Branded en la categoría
+  CHART-4f11b75717:
+    type: CHART
+    id: CHART-4f11b75717
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-875f2f1e1c
+    meta:
+      width: 6
+      height: 56
+      chartId: 34
+      uuid: f6d68413-f798-53c6-90cd-8e29f0c132cb
+      sliceName: Personajes - Top 20
+  ROW-a7fa0f45a1:
+    type: ROW
+    id: ROW-a7fa0f45a1
+    children:
+    - MARKDOWN-c4edc443b3
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-c4edc443b3:
+    type: MARKDOWN
+    id: MARKDOWN-c4edc443b3
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-68042d0ddf
+    - ROW-a7fa0f45a1
+    meta:
+      width: 12
+      height: 8
+      code: 'Fuente: Revenue Research - API Tendencias de Mercado Libre - Arg/Bra/Chi/Col/Méx'
+  TAB-efd01d0fae:
+    type: TAB
+    id: TAB-efd01d0fae
+    children:
+    - HEADER-11d1511738
+    - ROW-12755beab1
+    - ROW-99e41e8550
+    - HEADER-ff60b5018a
+    - ROW-f33beb25dd
+    - ROW-ae20d38ed5
+    - HEADER-c17b145bc1
+    - ROW-b0459c1f2a
+    - HEADER-f3bbcb7cac
+    - ROW-00145abb8c
+    - ROW-69a0eee75a
+    - ROW-b1d4f818d3
+    - ROW-9fa2c71b0f
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Subcategories
+      defaultText: Tab title
+      placeholder: Tab title
+  HEADER-11d1511738:
+    type: HEADER
+    id: HEADER-11d1511738
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      text: Subcategorías
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-12755beab1:
+    type: ROW
+    id: ROW-12755beab1
+    children:
+    - CHART-2610a97622
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-2610a97622:
+    type: CHART
+    id: CHART-2610a97622
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-12755beab1
+    meta:
+      width: 12
+      height: 56
+      chartId: 35
+      uuid: eec7bf3d-12f9-56a0-9aa6-72e3b1f8a50e
+      sliceName: TOP 10 Subcategorías
+  ROW-99e41e8550:
+    type: ROW
+    id: ROW-99e41e8550
+    children:
+    - CHART-a70d7eb8e9
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-a70d7eb8e9:
+    type: CHART
+    id: CHART-a70d7eb8e9
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-99e41e8550
+    meta:
+      width: 12
+      height: 56
+      chartId: 36
+      uuid: 53ac4a8d-5cc7-56a1-a61f-1e752351f8b9
+      sliceName: Evolución TOP 10 Subcategorías
+  HEADER-ff60b5018a:
+    type: HEADER
+    id: HEADER-ff60b5018a
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      text: Por País TOP 5
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-f33beb25dd:
+    type: ROW
+    id: ROW-f33beb25dd
+    children:
+    - CHART-3d4f340bfe
+    - CHART-184703436b
+    - CHART-2b7003da6f
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-3d4f340bfe:
+    type: CHART
+    id: CHART-3d4f340bfe
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-f33beb25dd
+    meta:
+      width: 4
+      height: 56
+      chartId: 37
+      uuid: e7e33aaa-b820-5912-bb9e-657a1f33427e
+      sliceName: Argentina - TOP 5 Subcategorías
+  CHART-184703436b:
+    type: CHART
+    id: CHART-184703436b
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-f33beb25dd
+    meta:
+      width: 4
+      height: 56
+      chartId: 38
+      uuid: 1854046c-bcec-5b60-803e-2bf87b3d8709
+      sliceName: Brasil - TOP 5 Subcategorías
+  CHART-2b7003da6f:
+    type: CHART
+    id: CHART-2b7003da6f
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-f33beb25dd
+    meta:
+      width: 4
+      height: 56
+      chartId: 39
+      uuid: 464ffb83-411d-5591-a3f7-d8c22b9a11b9
+      sliceName: Colombia - TOP 5 Subcategorías
+  ROW-ae20d38ed5:
+    type: ROW
+    id: ROW-ae20d38ed5
+    children:
+    - CHART-08c2b6fea0
+    - CHART-11ba67a61c
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-08c2b6fea0:
+    type: CHART
+    id: CHART-08c2b6fea0
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-ae20d38ed5
+    meta:
+      width: 6
+      height: 56
+      chartId: 40
+      uuid: 8af46cb3-b692-562e-9103-2f7007cbd20f
+      sliceName: Chile - TOP 5 Subcategorías
+  CHART-11ba67a61c:
+    type: CHART
+    id: CHART-11ba67a61c
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-ae20d38ed5
+    meta:
+      width: 6
+      height: 56
+      chartId: 41
+      uuid: 41660d65-e3f5-51aa-a976-b4038d12deeb
+      sliceName: Mexico - TOP 5 Subcategorías
+  HEADER-c17b145bc1:
+    type: HEADER
+    id: HEADER-c17b145bc1
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      text: Wordcloud Top 25 Keywords
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-b0459c1f2a:
+    type: ROW
+    id: ROW-b0459c1f2a
+    children:
+    - CHART-e4328dd364
+    - CHART-67118d6cc2
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-e4328dd364:
+    type: CHART
+    id: CHART-e4328dd364
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-b0459c1f2a
+    meta:
+      width: 6
+      height: 56
+      chartId: 42
+      uuid: 6bdf3394-79ca-5a2e-ba50-780c08c43af3
+      sliceName: Branded - Top 25 Productos
+  CHART-67118d6cc2:
+    type: CHART
+    id: CHART-67118d6cc2
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-b0459c1f2a
+    meta:
+      width: 6
+      height: 56
+      chartId: 43
+      uuid: 57fd71e1-d8c6-58dc-aec5-f03202a2c097
+      sliceName: Unbranded - Top 25 Productos
+  HEADER-f3bbcb7cac:
+    type: HEADER
+    id: HEADER-f3bbcb7cac
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      text: Subcategorías TWDC
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-00145abb8c:
+    type: ROW
+    id: ROW-00145abb8c
+    children:
+    - CHART-91ed5606c8
+    - CHART-3c9dd076a0
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-91ed5606c8:
+    type: CHART
+    id: CHART-91ed5606c8
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-00145abb8c
+    meta:
+      width: 6
+      height: 56
+      chartId: 44
+      uuid: 5b2214c9-f5a6-5bb0-b320-e5344135d895
+      sliceName: Subcategorías TWDC
+  CHART-3c9dd076a0:
+    type: CHART
+    id: CHART-3c9dd076a0
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-00145abb8c
+    meta:
+      width: 6
+      height: 56
+      chartId: 46
+      uuid: 7be89482-3d56-5281-abe6-de0fc1e7ebf2
+      sliceName: Subcategorías por Franquicia
+  ROW-69a0eee75a:
+    type: ROW
+    id: ROW-69a0eee75a
+    children:
+    - CHART-71b08948e6
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-71b08948e6:
+    type: CHART
+    id: CHART-71b08948e6
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-69a0eee75a
+    meta:
+      width: 12
+      height: 56
+      chartId: 45
+      uuid: c624bb96-6c09-5564-8b2c-52a14bf26b54
+      sliceName: Subcategorías TWDC - Evolución
+  ROW-b1d4f818d3:
+    type: ROW
+    id: ROW-b1d4f818d3
+    children:
+    - CHART-b86bce930d
+    - CHART-6a95633026
+    - CHART-b2ff18e109
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-b86bce930d:
+    type: CHART
+    id: CHART-b86bce930d
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-b1d4f818d3
+    meta:
+      width: 4
+      height: 56
+      chartId: 47
+      uuid: 41e4475f-3283-59de-886d-52983535c921
+      sliceName: Subcategorías Totales
+  CHART-6a95633026:
+    type: CHART
+    id: CHART-6a95633026
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-b1d4f818d3
+    meta:
+      width: 4
+      height: 56
+      chartId: 48
+      uuid: b0cfd66e-3a25-5402-95b5-a7aa93d4c69f
+      sliceName: Subcategorías Branded
+  CHART-b2ff18e109:
+    type: CHART
+    id: CHART-b2ff18e109
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-b1d4f818d3
+    meta:
+      width: 4
+      height: 56
+      chartId: 49
+      uuid: 20b7fcf7-b783-581a-ad0b-8bf65388a4b2
+      sliceName: Subcategorías Unbranded
+  ROW-9fa2c71b0f:
+    type: ROW
+    id: ROW-9fa2c71b0f
+    children:
+    - MARKDOWN-ec15970346
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-ec15970346:
+    type: MARKDOWN
+    id: MARKDOWN-ec15970346
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-efd01d0fae
+    - ROW-9fa2c71b0f
+    meta:
+      width: 12
+      height: 8
+      code: 'Fuente: Revenue Research - API Tendencias de Mercado Libre - Arg/Bra/Chi/Col/Méx'
+  TAB-9e698480ff:
+    type: TAB
+    id: TAB-9e698480ff
+    children:
+    - HEADER-208c10d41f
+    - ROW-bdd67b535f
+    - ROW-cc1b8f31a1
+    - ROW-ec000e7ee6
+    - ROW-fabd4784e4
+    - ROW-d54cc47d36
+    parents:
+    - ROOT_ID
+    - TABS-main
+    meta:
+      text: Products and Trends
+      defaultText: Tab title
+      placeholder: Tab title
+  HEADER-208c10d41f:
+    type: HEADER
+    id: HEADER-208c10d41f
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    meta:
+      text: Producto y tendencias
+      headerSize: MEDIUM_HEADER
+      background: BACKGROUND_TRANSPARENT
+  ROW-bdd67b535f:
+    type: ROW
+    id: ROW-bdd67b535f
+    children:
+    - CHART-66f75fd3d2
+    - CHART-a92352945b
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-66f75fd3d2:
+    type: CHART
+    id: CHART-66f75fd3d2
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-bdd67b535f
+    meta:
+      width: 6
+      height: 56
+      chartId: 50
+      uuid: b438c826-d1f5-5f44-b5c0-4eb9fc9f822b
+      sliceName: Branded / Unbranded
+  CHART-a92352945b:
+    type: CHART
+    id: CHART-a92352945b
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-bdd67b535f
+    meta:
+      width: 6
+      height: 56
+      chartId: 51
+      uuid: 117a6354-c0e1-53eb-8312-1b9318df36af
+      sliceName: Franquicias Brandeadas
+  ROW-cc1b8f31a1:
+    type: ROW
+    id: ROW-cc1b8f31a1
+    children:
+    - CHART-0324f1c7e4
+    - CHART-7c46a296dc
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-0324f1c7e4:
+    type: CHART
+    id: CHART-0324f1c7e4
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-cc1b8f31a1
+    meta:
+      width: 6
+      height: 56
+      chartId: 52
+      uuid: 4bf77615-d00f-5385-afee-22e5dc5a19cc
+      sliceName: Top 100 de productos buscados
+  CHART-7c46a296dc:
+    type: CHART
+    id: CHART-7c46a296dc
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-cc1b8f31a1
+    meta:
+      width: 6
+      height: 56
+      chartId: 53
+      uuid: 9b184a3d-5ee2-5856-91c8-2db4bee54ea2
+      sliceName: Producto branded y personaje
+  ROW-ec000e7ee6:
+    type: ROW
+    id: ROW-ec000e7ee6
+    children:
+    - CHART-8159e100cd
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-8159e100cd:
+    type: CHART
+    id: CHART-8159e100cd
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-ec000e7ee6
+    meta:
+      width: 12
+      height: 56
+      chartId: 54
+      uuid: bcdb5cc1-24ed-5d43-8e1f-f15ca5c56ea8
+      sliceName: Top 10 en Tendencias
+  ROW-fabd4784e4:
+    type: ROW
+    id: ROW-fabd4784e4
+    children:
+    - CHART-61480b9601
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-61480b9601:
+    type: CHART
+    id: CHART-61480b9601
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-fabd4784e4
+    meta:
+      width: 12
+      height: 56
+      chartId: 55
+      uuid: 261cc577-630d-5663-8b90-4088b5613ee7
+      sliceName: Palabras buscadas dentro de franquicias Nivel 2 TOP 20
+  ROW-d54cc47d36:
+    type: ROW
+    id: ROW-d54cc47d36
+    children:
+    - MARKDOWN-cd1ce1917e
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  MARKDOWN-cd1ce1917e:
+    type: MARKDOWN
+    id: MARKDOWN-cd1ce1917e
+    children: []
+    parents:
+    - ROOT_ID
+    - TABS-main
+    - TAB-9e698480ff
+    - ROW-d54cc47d36
+    meta:
+      width: 12
+      height: 8
+      code: 'Fuente: Revenue Research - API Tendencias de Mercado Libre - Arg/Bra/Chi/Col/Méx'
+metadata:
+  native_filter_configuration:
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: &id001 []
+    id: NATIVE_FILTER-fecha
+    name: Fecha
+    filterType: filter_time
+    targets:
+    - {}
+    controlValues:
+      enableEmptyFilter: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: &id002
+      rootPath:
+      - ROOT_ID
+      excluded: []
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-timeframe
+    name: Timeframe
+    filterType: filter_timegrain
+    targets:
+    - datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+    defaultDataMask:
+      extraFormData:
+        time_grain_sqla: P1W
+      filterState:
+        value:
+        - P1W
+      ownState: {}
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 12
+      - 13
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+      - 27
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+      - 34
+      - 35
+      - 37
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+      - 43
+      - 44
+      - 46
+      - 47
+      - 48
+      - 49
+      - 50
+      - 51
+      - 52
+      - 53
+      - 54
+      - 55
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-country-str
+    name: País
+    filterType: filter_select
+    targets:
+    - column:
+        name: country_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-category-str
+    name: Categoría
+    filterType: filter_select
+    targets:
+    - column:
+        name: category_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds:
+    - NATIVE_FILTER-category-str
+    id: NATIVE_FILTER-subcategory-str
+    name: Subcategoría
+    filterType: filter_select
+    targets:
+    - column:
+        name: subcategory_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-group-company-owner-rights-str
+    name: Grupo Empresa Owner Derechos
+    filterType: filter_select
+    targets:
+    - column:
+        name: group_company_owner_rights_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-franchise-n1-str
+    name: Franquicia
+    filterType: filter_select
+    targets:
+    - column:
+        name: franchise_n1_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-content-str
+    name: Contenido
+    filterType: filter_select
+    targets:
+    - column:
+        name: content_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-character-str
+    name: Personaje
+    filterType: filter_select
+    targets:
+    - column:
+        name: character_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-brand-str
+    name: Marca
+    filterType: filter_select
+    targets:
+    - column:
+        name: brand_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  - type: NATIVE_FILTER
+    description: ''
+    cascadeParentIds: *id001
+    id: NATIVE_FILTER-branded-str
+    name: Branded
+    filterType: filter_select
+    targets:
+    - column:
+        name: branded_str
+      datasetUuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
+    controlValues:
+      enableEmptyFilter: false
+      defaultToFirstItem: false
+      multiSelect: true
+      searchAllOptions: false
+      inverseSelection: false
+    defaultDataMask:
+      extraFormData: {}
+      filterState: {}
+      ownState: {}
+    scope: *id002
+  chart_configuration: {}
+  global_chart_configuration:
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded: []
+  color_scheme: supersetColors
+  refresh_frequency: 0
+  expanded_slices: {}
+  label_colors: {}
+  shared_label_colors: {}
+  color_scheme_domain: []
+  cross_filters_enabled: true
+  filter_bar_orientation: HORIZONTAL
+  timed_refresh_immune_slices: []
+  default_filters: '{}'
+version: 1.0.0

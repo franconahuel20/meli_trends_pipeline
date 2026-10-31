@@ -1,0 +1,44 @@
+slice_name: Share por Franquicias (Nivel 2)
+description: null
+certified_by: null
+certification_details: null
+viz_type: treemap_v2
+params:
+  viz_type: treemap_v2
+  adhoc_filters:
+  - clause: WHERE
+    subject: date_dte
+    operator: TEMPORAL_RANGE
+    comparator: No filter
+    expressionType: SIMPLE
+    isExtra: false
+    isNew: false
+    sqlExpression: null
+    filterOptionName: filter_3304b23422
+  - clause: WHERE
+    subject: twdc_int
+    operator: ==
+    comparator: 1
+    expressionType: SIMPLE
+    isExtra: false
+    isNew: false
+    sqlExpression: null
+    filterOptionName: filter_5443c58a2a
+  extra_form_data: {}
+  dashboards: []
+  groupby:
+  - franchise_n2_str
+  metric: count
+  row_limit: 50
+  sort_by_metric: true
+  color_scheme: supersetColors
+  show_labels: true
+  show_upper_labels: true
+  label_type: key_value
+  number_format: SMART_NUMBER
+  date_format: smart_date
+query_context: null
+cache_timeout: null
+uuid: 75fab1dd-374f-5b2a-a69c-7ce76692c545
+version: 1.0.0
+dataset_uuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1

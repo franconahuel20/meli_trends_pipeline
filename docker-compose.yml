@@ -27,7 +27,7 @@ x-dagster-environment: &dagster-environment
   MATCHING_FUZZY_ENABLED: ${MATCHING_FUZZY_ENABLED:-true}
 
 x-dagster-service: &dagster-service
-  image: meli-trends-pipeline/dagster:2.0.0
+  image: meli-trends-pipeline/dagster:2.1.0
   # Local-only image: build it instead of trying to pull it from Docker Hub.
   pull_policy: build
   build:
@@ -152,8 +152,24 @@ services:
       minio-init:
         condition: service_completed_successfully
 
+  # Superset's own metadata (users, datasets, charts, dashboards) on a persistent volume.
+  superset-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: ${SUPERSET_DB_PASSWORD:-superset}
+    volumes:
+      - superset_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U superset -d superset"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
   superset:
-    image: meli-trends-pipeline/superset:4.1.1
+    image: meli-trends-pipeline/superset:4.1.1-2
     pull_policy: build
     build:
       context: .
@@ -162,7 +178,14 @@ services:
       SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:-meli-trends-pipeline-local-only-change-me-7f3c9a1e5b2d}
       SUPERSET_ADMIN_USERNAME: ${SUPERSET_ADMIN_USERNAME:-admin}
       SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD:-admin}
-      ANALYTICS_DB_DISPLAY_NAME: MeLi Trends (PostgreSQL)
+      SUPERSET_DB_HOST: superset-db
+      SUPERSET_DB_PORT: "5432"
+      SUPERSET_DB_NAME: superset
+      SUPERSET_DB_USER: superset
+      SUPERSET_DB_PASSWORD: ${SUPERSET_DB_PASSWORD:-superset}
+      # missing: import the versioned dashboards only when they do not exist (keeps UI edits);
+      # overwrite: replace them with the bundle in superset/dashboard on every start.
+      SUPERSET_DASHBOARDS_IMPORT: ${SUPERSET_DASHBOARDS_IMPORT:-missing}
       ANALYTICS_DB_HOST: postgres
       ANALYTICS_DB_PORT: "5432"
       ANALYTICS_DB_NAME: ${POSTGRES_DB:-snowflake_dev}
@@ -177,9 +200,11 @@ services:
       interval: 15s
       timeout: 10s
       retries: 30
-      start_period: 60s
+      start_period: 90s
     depends_on:
       postgres:
+        condition: service_healthy
+      superset-db:
         condition: service_healthy
     restart: unless-stopped
 
@@ -210,3 +235,4 @@ volumes:
   dagster_storage:
   minio_data:
   superset_home:
+  superset_db_data:

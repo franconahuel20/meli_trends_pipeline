@@ -84,6 +84,15 @@ class MinioResource(ConfigurableResource):
         response = self._client().get_object(Bucket=self.bucket, Key=key)
         return response["Body"].read()
 
+    def list_keys(self, prefix: str) -> list[str]:
+        self.ensure_bucket()
+        paginator = self._client().get_paginator("list_objects_v2")
+        return [
+            obj["Key"]
+            for page in paginator.paginate(Bucket=self.bucket, Prefix=prefix)
+            for obj in page.get("Contents", [])
+        ]
+
 
 @dataclass(frozen=True)
 class TrendsResponse:

@@ -1,0 +1,232 @@
+# Brand rules: curated ways of naming a brand that the master list (brands.xlsx) misses
+# or cannot use safely. One rule per line:
+#
+#     alias | Brand as shown in dashboards | optional categories, separated by ";"
+#
+# - alias: words as typed in searches (normalized like keywords: lowercase, no accents).
+#   "#" stands for one model code, i.e. a token with a digit: "galaxy #" matches
+#   "galaxy s24" and "galaxy a55", not "galaxy" alone.
+# - categories: homologated Mercado Libre categories (mercado_libre_subcat.xlsx). The
+#   rule only fires for keywords of those categories: "wilson" is the brand in
+#   "Deportes y Fitness" (raqueta wilson), not in "Arte, Librería y Mercería".
+# - A rule replaces the master-list entry with the same alias, so it also fixes the
+#   display name ("dji" -> "DJI") and lifts the ambiguity of "wilson" inside its categories.
+#
+# Every rule was checked against real trend keywords; keep it that way: an alias that is
+# also an everyday word needs categories.
+
+# --- Display names of acronyms (same alias as the master list) ----------------------
+hp | HP
+lg | LG
+jbl | JBL
+dji | DJI
+amd | AMD
+msi | MSI
+bmw | BMW
+tcl | TCL
+aoc | AOC
+nyx | NYX
+byd | BYD
+
+# --- Product lines -> brand --------------------------------------------------------
+iphone | Apple
+iphones | Apple
+ipad | Apple
+ipads | Apple
+macbook | Apple
+macbooks | Apple
+imac | Apple
+mac mini | Apple
+airpods | Apple
+airpod | Apple
+ipod | Apple
+magsafe | Apple
+airtag | Apple
+airtags | Apple
+apple watch | Apple
+mac | Apple | Computación
+mac | MAC Cosmetics | Belleza y Cuidado Personal
+mac cosmetics | MAC Cosmetics
+
+ps1 | Playstation
+ps2 | Playstation
+ps3 | Playstation
+ps4 | Playstation
+ps5 | Playstation
+ps 2 | Playstation
+ps 3 | Playstation
+ps 4 | Playstation
+ps 5 | Playstation
+psp | Playstation
+ps vita | Playstation
+psvita | Playstation
+dualshock | Playstation
+dualsense | Playstation
+play # | Playstation | Consolas y Videojuegos
+
+amiibo | Nintendo
+amiibos | Nintendo
+joycon | Nintendo
+joycons | Nintendo
+joy con | Nintendo
+switch oled | Nintendo
+switch lite | Nintendo
+switch | Nintendo | Consolas y Videojuegos
+wii | Nintendo
+gameboy | Nintendo
+game boy | Nintendo
+gamecube | Nintendo
+3ds | Nintendo
+2ds | Nintendo
+snes | Nintendo
+n64 | Nintendo
+
+galaxy # | Samsung
+galaxy buds | Samsung
+galaxy tab | Samsung
+galaxy watch | Samsung
+galaxy note | Samsung
+galaxy fit | Samsung
+galaxy book | Samsung
+galaxy z | Samsung
+odyssey # | Samsung | Computación
+
+chromecast | Google
+chromecasts | Google
+pixel # | Google
+nest mini | Google
+nest hub | Google
+nest audio | Google
+
+kindle | Amazon
+fire tv | Amazon
+fire stick | Amazon
+firestick | Amazon
+echo dot | Amazon
+echo show | Amazon
+echo pop | Amazon
+alexa | Amazon | Electrónica, Audio y Video; Hogar, Muebles y Jardín; Computación
+
+redmi | Xiaomi
+mi band | Xiaomi
+mi smart band | Xiaomi
+mi box | Xiaomi
+mi stick | Xiaomi
+mi tv stick | Xiaomi
+mijia | Xiaomi
+poco # | Xiaomi
+
+mavic | DJI
+osmo | DJI
+avata | DJI
+phantom # | DJI | Electrónica, Audio y Video; Cámaras y Accesorios
+
+ryzen | AMD
+radeon | AMD
+threadripper | AMD
+geforce | Nvidia
+rtx # | Nvidia
+gtx # | Nvidia
+core i3 | Intel
+core i5 | Intel
+core i7 | Intel
+core i9 | Intel
+
+windows # | Microsoft | Computación
+office # | Microsoft | Computación
+surface pro | Microsoft
+surface laptop | Microsoft
+
+meta quest | Meta
+oculus quest | Meta
+quest # | Meta | Consolas y Videojuegos; Celulares y Teléfonos; Computación; Electrónica, Audio y Video
+steam deck | Valve
+
+moto edge | Motorola
+moto # | Motorola | Celulares y Teléfonos
+rog ally | ASUS
+rog strix | ASUS
+legion go | Lenovo
+thinkpad | Lenovo
+ideapad | Lenovo
+
+fenix # | Garmin
+play doh | Play-Doh
+playdoh | Play-Doh
+all star | Converse | Ropa y Accesorios
+
+# --- Brands missing from the master list ------------------------------------------
+similac | Similac
+enfamil | Enfamil
+aptamil | Aptamil
+nestogeno | Nestogeno
+pampers | Pampers
+babysec | Babysec
+maybelline | Maybelline
+kiko milano | Kiko Milano
+fenty beauty | Fenty Beauty
+rare beauty | Rare Beauty
+huda beauty | Huda Beauty
+bravecto | Bravecto
+nexgard | NexGard
+simparica | Simparica
+feliway | Feliway
+segway | Segway
+gymshark | Gymshark
+gym shark | Gymshark
+attack shark | Attack Shark
+floyd rose | Floyd Rose
+maxi cosi | Maxi-Cosi
+honey whale | Honey Whale
+royal prestige | Royal Prestige
+tech deck | Tech Deck
+athletic works | Athletic Works
+post it | Post-it
+victoria secret | Victoria's Secret
+victorias secret | Victoria's Secret
+alo yoga | Alo Yoga
+pop mart | Pop Mart
+
+# --- Brands that are everyday words: only inside their categories -----------------
+nan | NAN | Bebés; Alimentos y Bebidas
+nido | Nido | Bebés; Alimentos y Bebidas
+vital | Vital | Bebés
+s26 | S-26 | Bebés; Alimentos y Bebidas
+mam | MAM | Bebés
+johnson | Johnson's | Bebés; Belleza y Cuidado Personal
+baby colors | Baby Colors | Bebés; Ropa y Accesorios
+elf | e.l.f. | Belleza y Cuidado Personal
+wilson | Wilson | Deportes y Fitness
+head | Head | Deportes y Fitness
+prince | Prince | Deportes y Fitness
+arena | Arena | Deportes y Fitness
+trek | Trek | Deportes y Fitness
+specialized | Specialized | Deportes y Fitness
+columbia | Columbia | Ropa y Accesorios; Deportes y Fitness
+quechua | Quechua | Ropa y Accesorios; Deportes y Fitness
+new era | New Era | Ropa y Accesorios; Deportes y Fitness
+marshall | Marshall | Instrumentos Musicales; Electrónica, Audio y Video
+boss | Boss | Instrumentos Musicales
+vox | Vox | Instrumentos Musicales
+orange | Orange | Instrumentos Musicales
+jackson | Jackson | Instrumentos Musicales
+parker | Parker | Arte, Librería y Mercería; Joyas y Relojes
+genius | Genius | Computación
+aula | Aula | Computación
+astro | Astro | Consolas y Videojuegos; Computación; Electrónica, Audio y Video
+ninja | Ninja | Electrodomésticos y Aires Ac.
+thomas | Thomas | Electrodomésticos y Aires Ac.
+ram | RAM | Autos, Motos y Otros
+corona | Corona | Alimentos y Bebidas
+kinder | Kinder | Alimentos y Bebidas
+playboy | Playboy | Libros, Revistas y Comics; Ropa y Accesorios
+vogue | Vogue | Libros, Revistas y Comics
+ninho | Ninho | Bebés; Alimentos y Bebidas
+singer | Singer | Electrodomésticos y Aires Ac.; Hogar, Muebles y Jardín; Arte, Librería y Mercería
+bianchi | Bianchi | Deportes y Fitness
+gw | GW | Deportes y Fitness
+democrata | Democrata | Ropa y Accesorios
+patagonia | Patagonia | Ropa y Accesorios
+cherokee | Cherokee | Ropa y Accesorios
+swift | Swift | Alimentos y Bebidas
+fenix | Garmin | Joyas y Relojes; Celulares y Teléfonos

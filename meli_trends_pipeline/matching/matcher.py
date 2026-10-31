@@ -12,8 +12,9 @@ of false positives observed on real Mercado Libre trends:
   counts when the joined one also appears in the batch, so ordinary phrases
   ("pro max", "hip hop", "el gato") never collapse into a brand.
 * ``variant``: singular/plural of a character name ("minion" / "minions");
-  for one-word names the listed form must also appear in the batch. Brands get
-  no variants: "pumas" is a football club, not Puma.
+  for one-word names the listed form must also appear in the batch. Brands only
+  get the plural of their name ("legos" -> Lego), never when the plural is
+  itself a listed word ("pumas" is a football club, not Puma).
 * ``fuzzy``: a one-letter typo of a long character name ("stich" -> Stitch),
   keeping the first and last letters, and only when the batch shows the
   correct spelling is the common one. Brands are never typo-corrected: the
@@ -23,6 +24,12 @@ of false positives observed on real Mercado Libre trends:
 Aliases that are also everyday words ("power", "polo", "anna") are ambiguous:
 an ambiguous brand never matches, and an ambiguous character needs a term of
 its franchise or owner elsewhere in the keyword ("anna frozen").
+
+Brand rules (``wordlists/brand_rules.txt``) add curated aliases: product lines
+("iphone" -> Apple, "galaxy s24" -> Samsung, where ``#`` in the alias stands
+for a model code) and brands that are only unambiguous inside some categories
+("wilson" is the brand in Deportes y Fitness). A category-restricted alias
+matches only when the keyword is matched together with its category.
 """
 
 from __future__ import annotations
@@ -34,7 +41,7 @@ from typing import Iterable, Mapping, Sequence
 from rapidfuzz import fuzz, process
 from rapidfuzz.distance import Levenshtein
 
-from .lexicon import Lexicon
+from .lexicon import MODEL_WILDCARD, Lexicon
 from .text import has_digit, normalize_text
 
 BRAND = "brand"
@@ -60,6 +67,8 @@ class MatchingConfig:
     # of the batch, and this many times more often than the misspelling.
     fuzzy_min_support: int = 2
     fuzzy_support_ratio: float = 2.0
+    # Plural spellings of brand names ("legos"); see ``_KindIndex._brand_variants``.
+    brand_variants: bool = True
     compact_min_length: int = 5
     variant_min_length: int = 4
     max_window_tokens: int = 4
@@ -78,6 +87,12 @@ class Entity:
     # character matches belong together ("lego" + "lego friends").
     related_terms: frozenset[str] = frozenset()
     attributes: Mapping[str, object] = field(default_factory=dict)
+    # Normalized category names the alias is restricted to; None means anywhere.
+    categories: frozenset[str] | None = None
+
+    @property
+    def is_pattern(self) -> bool:
+        return MODEL_WILDCARD in self.tokens
 
     @property
     def alias(self) -> str:
@@ -162,16 +177,24 @@ class _KindIndex:
         self.exact: dict[tuple[str, ...], list[Entity]] = defaultdict(list)
         self.compact: dict[str, list[Entity]] = defaultdict(list)
         self.variant: dict[tuple[str, ...], list[Entity]] = defaultdict(list)
+        # Aliases with a model-code wildcard, keyed by their first (literal) token.
+        self.patterns: dict[str, list[Entity]] = defaultdict(list)
         fuzzy: dict[tuple[int, str], list[Entity]] = defaultdict(list)
         typo_correction = config.fuzzy_enabled and kind in config.fuzzy_kinds
 
         for entity in entities:
+            if entity.is_pattern:
+                self.patterns[entity.tokens[0]].append(entity)
+                continue
             self.exact[entity.tokens].append(entity)
             compact = entity.compact
             if len(compact) >= config.compact_min_length and not compact.isdigit():
                 self.compact[compact].append(entity)
             if kind == CHARACTER:
                 for variant in self._variants(entity):
+                    self.variant[variant].append(entity)
+            elif config.brand_variants:
+                for variant in self._brand_variants(entity):
                     self.variant[variant].append(entity)
             if typo_correction and not entity.ambiguous and len(compact) >= config.fuzzy_min_length:
                 fuzzy[(len(entity.tokens), entity.tokens[0][0])].append(entity)
@@ -189,6 +212,30 @@ class _KindIndex:
         for token in sorted(plural_variants(last)):
             tokens = entity.tokens[:-1] + (token,)
             if tokens in self.reserved or self.lexicon.is_generic(token):
+                continue
+            out.append(tokens)
+        return out
+
+    def _brand_variants(self, entity: Entity) -> list[tuple[str, ...]]:
+        """Plural of a brand name ("lego" -> "legos"), never a word of its own.
+
+        Ambiguous and category-restricted brands get none, and a plural that is
+        itself a listed or everyday word ("pumas", the club) is skipped.
+        """
+        if entity.ambiguous or entity.categories is not None:
+            return []
+        last = entity.tokens[-1]
+        if len(last) < self.config.variant_min_length or has_digit(last) or last.endswith("s"):
+            return []
+        out = []
+        for token in sorted(v for v in plural_variants(last) if v.startswith(last)):
+            tokens = entity.tokens[:-1] + (token,)
+            if (
+                tokens in self.reserved
+                or self.lexicon.is_generic(token)
+                or token in self.lexicon.ambiguous_aliases
+                or token in self.lexicon.fuzzy_protected
+            ):
                 continue
             out.append(tokens)
         return out
@@ -214,6 +261,14 @@ class _KindIndex:
         found: list[Match] = []
         n = len(tokens)
         for start in range(n):
+            for entity in self.patterns.get(tokens[start], ()):
+                end = start + len(entity.tokens)
+                window = tokens[start:end]
+                if end <= n and all(
+                    expected == seen or (expected == MODEL_WILDCARD and has_digit(seen))
+                    for expected, seen in zip(entity.tokens, window)
+                ):
+                    found.append(Match(entity, start, end, EXACT, 100, " ".join(window)))
             for size in range(1, min(self.max_tokens, n - start) + 1):
                 key = tokens[start : start + size]
                 text = " ".join(key)
@@ -323,8 +378,10 @@ class EntityMatcher:
         tokens: Sequence[str],
         support: NgramSupport | None = None,
         fuzzy_cache: dict | None = None,
+        category: str | None = None,
     ) -> KeywordMatches:
-        """Match one keyword. ``support`` (batch statistics) enables the batch-backed rules."""
+        """Match one keyword. ``support`` (batch statistics) enables the batch-backed rules;
+        ``category`` (normalized) enables the category-restricted brand rules."""
         tokens = tuple(tokens)
         if not tokens:
             return KeywordMatches()
@@ -332,9 +389,11 @@ class EntityMatcher:
         if fuzzy_cache is not None:
             brand_cache = fuzzy_cache.setdefault(BRAND, {})
             character_cache = fuzzy_cache.setdefault(CHARACTER, {})
-        brands = self._select(self._brands.candidates(tokens, support, brand_cache), tokens)
+        brands = self._select(
+            self._brands.candidates(tokens, support, brand_cache), tokens, category
+        )
         characters = self._select(
-            self._characters.candidates(tokens, support, character_cache), tokens
+            self._characters.candidates(tokens, support, character_cache), tokens, category
         )
         return self._resolve_overlaps(brands, characters)
 
@@ -347,8 +406,28 @@ class EntityMatcher:
         cache: dict = {}
         return {k: self.match_tokens(t, support, cache) for k, t in token_lists.items()}
 
-    def _admissible(self, match: Match, tokens: tuple[str, ...]) -> bool:
+    def match_pairs(
+        self, pairs: Iterable[tuple[object, object]]
+    ) -> dict[tuple[str, str], KeywordMatches]:
+        """Match a batch of (keyword, category) pairs.
+
+        Results are keyed by (normalized keyword, normalized category). Batch statistics
+        come from the keywords alone, so a keyword gets the same support in every category.
+        """
+        unique = {(normalize_text(k), normalize_text(c)) for k, c in pairs}
+        unique = {pair for pair in unique if pair[0]}
+        token_lists = {k: tuple(k.split()) for k, _ in unique}
+        support = NgramSupport(token_lists.values(), self.config.max_window_tokens)
+        cache: dict = {}
+        return {
+            (k, c): self.match_tokens(token_lists[k], support, cache, c or None)
+            for k, c in unique
+        }
+
+    def _admissible(self, match: Match, tokens: tuple[str, ...], category: str | None) -> bool:
         entity = match.entity
+        if entity.categories is not None and category not in entity.categories:
+            return False
         if entity.ambiguous:
             outside = tokens[: match.start] + tokens[match.end :]
             if not entity.context or not any(t in entity.context for t in outside):
@@ -362,10 +441,12 @@ class EntityMatcher:
             return False  # "motor 2 hp", "tornillo 6 mm"
         return True
 
-    def _select(self, candidates: list[Match], tokens: tuple[str, ...]) -> list[Match]:
+    def _select(
+        self, candidates: list[Match], tokens: tuple[str, ...], category: str | None
+    ) -> list[Match]:
         """Leftmost-longest selection of non-overlapping admissible matches."""
         ordered = sorted(
-            (m for m in candidates if self._admissible(m, tokens)),
+            (m for m in candidates if self._admissible(m, tokens, category)),
             key=lambda m: (-m.length, _METHOD_RANK[m.method], -m.score, m.start, m.entity.entity_id),
         )
         chosen: list[Match] = []

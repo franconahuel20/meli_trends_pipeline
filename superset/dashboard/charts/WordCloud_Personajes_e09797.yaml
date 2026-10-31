@@ -1,0 +1,40 @@
+slice_name: WordCloud Personajes
+description: null
+certified_by: null
+certification_details: null
+viz_type: word_cloud
+params:
+  viz_type: word_cloud
+  adhoc_filters:
+  - clause: WHERE
+    subject: date_dte
+    operator: TEMPORAL_RANGE
+    comparator: No filter
+    expressionType: SIMPLE
+    isExtra: false
+    isNew: false
+    sqlExpression: null
+    filterOptionName: filter_3304b23422
+  - clause: WHERE
+    subject: character_str
+    operator: IS NOT NULL
+    comparator: null
+    expressionType: SIMPLE
+    isExtra: false
+    isNew: false
+    sqlExpression: null
+    filterOptionName: filter_88e22a182f
+  extra_form_data: {}
+  dashboards: []
+  series: character_str
+  metric: count
+  row_limit: 50
+  size_from: 12
+  size_to: 60
+  rotation: flat
+  color_scheme: supersetColors
+query_context: null
+cache_timeout: null
+uuid: 9810f469-9e20-52ac-bda0-15d7be2b71c4
+version: 1.0.0
+dataset_uuid: 1aaa81ff-e64b-5b18-bac5-f61bd5f91fd1
