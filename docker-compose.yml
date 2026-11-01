@@ -169,7 +169,7 @@ services:
     restart: unless-stopped
 
   superset:
-    image: meli-trends-pipeline/superset:4.1.1-2
+    image: meli-trends-pipeline/superset:4.1.1-3
     pull_policy: build
     build:
       context: .

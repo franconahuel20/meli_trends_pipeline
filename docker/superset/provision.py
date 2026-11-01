@@ -8,8 +8,8 @@ Runs on every start of the Superset container (see bootstrap.sh):
    when the dashboard does not exist yet, so dashboards come back even on a new volume.
    With SUPERSET_DASHBOARDS_IMPORT=overwrite (or --overwrite) the bundle replaces the
    dashboard, its charts and dataset, e.g. after updating the bundle in the repository.
-3. Stores the filter scopes (charts and tabs each dashboard filter applies to), as the
-   dashboard editor does when a dashboard is saved.
+3. Stores the filter scopes (charts and tabs each dashboard filter applies to) and the
+   cross-filter scopes of the charts, as the dashboard editor does when a dashboard is saved.
 """
 
 from __future__ import annotations
@@ -72,6 +72,38 @@ def chart_scopes(position: dict, native_filters: list[dict]) -> None:
         native_filter["tabsInScope"] = sorted({t for c in in_scope if (t := tab_of(charts[c]))})
 
 
+def chart_ids_by_uuid(position: dict) -> dict[str, int]:
+    return {
+        item["meta"]["uuid"]: item["meta"]["chartId"]
+        for item in position.values()
+        if isinstance(item, dict) and item.get("type") == "CHART"
+    }
+
+
+def cross_filter_scopes(bundle_position: dict, position: dict, chart_configuration: dict) -> dict:
+    """Map the bundle's per-chart cross-filter scopes to the imported chart ids and fill their
+    chartsInScope. The importer remaps native filter scopes but leaves chart_configuration with
+    the placeholder ids of the bundle."""
+    imported = chart_ids_by_uuid(position)
+    id_map = {old: imported[u] for u, old in chart_ids_by_uuid(bundle_position).items() if u in imported}
+    chart_ids = list(imported.values())
+    fixed = {}
+    for old_id, config in chart_configuration.items():
+        chart_id = id_map.get(int(old_id))
+        if chart_id is None:
+            continue
+        scope = config["crossFilters"]["scope"]
+        excluded = {id_map[c] for c in scope.get("excluded", []) if c in id_map}
+        fixed[str(chart_id)] = {
+            "id": chart_id,
+            "crossFilters": {
+                "scope": {**scope, "excluded": sorted(excluded)},
+                "chartsInScope": [c for c in chart_ids if c != chart_id and c not in excluded],
+            },
+        }
+    return fixed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--overwrite", action="store_true", help="re-import the bundle over existing assets")
@@ -130,7 +162,10 @@ def main() -> int:
         metadata = json.loads(dashboard.json_metadata or "{}")
         position = json.loads(dashboard.position_json or "{}")
         chart_scopes(position, metadata.get("native_filter_configuration", []))
-        chart_ids = [item["meta"]["chartId"] for item in position.values() if isinstance(item, dict) and item.get("type") == "CHART"]
+        metadata["chart_configuration"] = cross_filter_scopes(
+            dashboard_config["position"], position, metadata.get("chart_configuration", {})
+        )
+        chart_ids =[item["meta"]["chartId"] for item in position.values() if isinstance(item, dict) and item.get("type") == "CHART"]
         metadata["global_chart_configuration"] = {
             "scope": {"rootPath": ["ROOT_ID"], "excluded": []},
             "chartsInScope": chart_ids,

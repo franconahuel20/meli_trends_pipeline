@@ -29,6 +29,7 @@ params:
   series: character_str
   metric: count
   row_limit: 20
+  sort_by_metric: true
   size_from: 12
   size_to: 60
   rotation: flat

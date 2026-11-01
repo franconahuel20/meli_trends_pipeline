@@ -24,11 +24,21 @@ params:
     isNew: false
     sqlExpression: null
     filterOptionName: filter_f5573e0a27
+  - clause: WHERE
+    subject: keyword_es_without_stopwords_str
+    operator: IS NOT NULL
+    comparator: null
+    expressionType: SIMPLE
+    isExtra: false
+    isNew: false
+    sqlExpression: null
+    filterOptionName: filter_0d735458b8
   extra_form_data: {}
   dashboards: []
   series: keyword_es_without_stopwords_str
   metric: count
   row_limit: 50
+  sort_by_metric: true
   size_from: 12
   size_to: 60
   rotation: flat

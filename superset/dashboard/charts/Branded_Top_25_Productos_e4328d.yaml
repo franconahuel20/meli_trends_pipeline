@@ -38,6 +38,7 @@ params:
   series: producto_str
   metric: count
   row_limit: 25
+  sort_by_metric: true
   size_from: 12
   size_to: 60
   rotation: flat

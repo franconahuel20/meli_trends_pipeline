@@ -388,6 +388,8 @@ def word_cloud(column: str, *, filters=(), limit: int = 50) -> dict:
             "series": column,
             "metric": METRIC,
             "row_limit": limit,
+            # Without it the query has no ORDER BY and the limit keeps arbitrary words.
+            "sort_by_metric": True,
             "size_from": 12,
             "size_to": 60,
             "rotation": "flat",
@@ -449,7 +451,11 @@ CHARTS: dict[str, tuple[str, dict]] = {
     ),
     "sum_wordcloud_products": (
         "WordCloud Productos",
-        word_cloud("keyword_es_without_stopwords_str", filters=[UNBRANDED], limit=50),
+        word_cloud(
+            "keyword_es_without_stopwords_str",
+            filters=[UNBRANDED, not_null("keyword_es_without_stopwords_str")],
+            limit=50,
+        ),
     ),
     "sum_categories_total": ("Categorías Totales", table("category_str", limit=50)),
     "sum_categories_evolution": ("Evolución de Top Categorías", line(groupby="category_str", series_limit=5)),
@@ -723,6 +729,42 @@ SELECT_FILTERS = [
     ("Branded", "branded_str"),
 ]
 
+# Brand, character and franchise columns are only filled on Branded searches, so filtering by
+# them (in the filter bar or by clicking a chart) would always blank the charts pinned to
+# Unbranded: those charts ignore such filters. Charts pinned to either value ignore the
+# Branded filter itself.
+BRANDED_ONLY_COLUMNS = {
+    "brand_str",
+    "second_brand_str",
+    "character_str",
+    COMPANY,
+    "franchise_n1_str",
+    "franchise_n2_str",
+    "franchise_n3_str",
+    "content_str",
+    "twdc_int",
+    "franquicia_si_no_str",
+}
+
+
+def pinned_branded(params: dict) -> str | None:
+    """The Branded/Unbranded value a chart is restricted to, if any."""
+    for adhoc in params["adhoc_filters"]:
+        if adhoc["subject"] == "branded_str" and adhoc["operator"] == "==":
+            return adhoc["comparator"]
+    return None
+
+
+def immune_charts(column: str, chart_ids: dict[str, int]) -> list[int]:
+    """Charts that a filter on ``column`` must not apply to (see BRANDED_ONLY_COLUMNS)."""
+    if column == "branded_str":
+        return [chart_ids[key] for key, (_, params) in CHARTS.items() if pinned_branded(params)]
+    if column in BRANDED_ONLY_COLUMNS:
+        return [
+            chart_ids[key] for key, (_, params) in CHARTS.items() if pinned_branded(params) == "Unbranded"
+        ]
+    return []
+
 
 def native_filters(chart_ids: dict[str, int]) -> list[dict]:
     scope_all = {"rootPath": ["ROOT_ID"], "excluded": []}
@@ -778,13 +820,32 @@ def native_filters(chart_ids: dict[str, int]) -> list[dict]:
                     "inverseSelection": False,
                 },
                 "defaultDataMask": {"extraFormData": {}, "filterState": {}, "ownState": {}},
-                "scope": scope_all,
+                "scope": {"rootPath": ["ROOT_ID"], "excluded": immune_charts(column, chart_ids)},
             }
         )
     # Subcategory options follow the selected categories.
     by_id = {f["name"]: f for f in filters}
     by_id["Subcategoría"]["cascadeParentIds"] = [by_id["Categoría"]["id"]]
     return filters
+
+
+def cross_filter_configuration(chart_ids: dict[str, int]) -> dict:
+    """Cross-filter scope of the charts whose clicks filter a column some charts must ignore.
+
+    The other charts keep the default (global) scope. provision.py maps these placeholder ids
+    to the imported ones, which the Superset importer does not do for chart_configuration.
+    """
+    configuration = {}
+    for key, (_, params) in CHARTS.items():
+        dimensions = {params.get("x_axis"), params.get("series"), *params.get("groupby", [])}
+        excluded = sorted({chart for column in dimensions if column for chart in immune_charts(column, chart_ids)})
+        if excluded:
+            chart_id = chart_ids[key]
+            configuration[str(chart_id)] = {
+                "id": chart_id,
+                "crossFilters": {"scope": {"rootPath": ["ROOT_ID"], "excluded": excluded}},
+            }
+    return configuration
 
 
 # --------------------------------------------------------------------------------------
@@ -911,7 +972,7 @@ def dashboard_config() -> dict:
         "position": position(chart_ids),
         "metadata": {
             "native_filter_configuration": native_filters(chart_ids),
-            "chart_configuration": {},
+            "chart_configuration": cross_filter_configuration(chart_ids),
             "global_chart_configuration": {"scope": {"rootPath": ["ROOT_ID"], "excluded": []}},
             "color_scheme": "supersetColors",
             "refresh_frequency": 0,

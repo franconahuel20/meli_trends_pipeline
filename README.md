@@ -401,7 +401,10 @@ Revenue Research report with 55 charts in 7 tabs:
 The filter bar on top has *Fecha*, *Timeframe* (weekly or monthly evolution charts), *País*,
 *Categoría*, *Subcategoría*, *Grupo Empresa Owner Derechos*, *Franquicia*, *Contenido*,
 *Personaje*, *Marca* and *Branded*. The metric *Búsquedas* counts trend rows (keyword ×
-subcategory × day); *Producto* is the first noun of `nouns_keyword_str`.
+subcategory × day); *Producto* is the first noun of `nouns_keyword_str`. Unbranded searches
+have no brand, character, franchise, content or company, so the Unbranded charts ignore those
+filters (and the cross-filters of the charts on them); charts pinned to Branded or Unbranded
+ignore the *Branded* filter.
 
 ### Dashboards are never lost
 

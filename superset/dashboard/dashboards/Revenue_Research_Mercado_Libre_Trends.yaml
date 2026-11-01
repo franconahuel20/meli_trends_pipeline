@@ -1676,7 +1676,7 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: &id002
+    scope:
       rootPath:
       - ROOT_ID
       excluded: []
@@ -1770,7 +1770,10 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded: []
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1791,7 +1794,10 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded: []
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds:
@@ -1813,7 +1819,10 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded: []
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1834,7 +1843,15 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 8
+      - 9
+      - 13
+      - 43
+      - 49
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1855,7 +1872,15 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 8
+      - 9
+      - 13
+      - 43
+      - 49
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1876,7 +1901,15 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 8
+      - 9
+      - 13
+      - 43
+      - 49
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1897,7 +1930,15 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 8
+      - 9
+      - 13
+      - 43
+      - 49
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1918,7 +1959,15 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 8
+      - 9
+      - 13
+      - 43
+      - 49
   - type: NATIVE_FILTER
     description: ''
     cascadeParentIds: *id001
@@ -1939,8 +1988,361 @@ metadata:
       extraFormData: {}
       filterState: {}
       ownState: {}
-    scope: *id002
-  chart_configuration: {}
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded:
+      - 3
+      - 8
+      - 9
+      - 12
+      - 13
+      - 17
+      - 28
+      - 33
+      - 42
+      - 43
+      - 48
+      - 49
+  chart_configuration:
+    '1':
+      id: 1
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 3
+          - 8
+          - 9
+          - 12
+          - 13
+          - 17
+          - 28
+          - 33
+          - 42
+          - 43
+          - 48
+          - 49
+    '4':
+      id: 4
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '5':
+      id: 5
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '6':
+      id: 6
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '7':
+      id: 7
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '14':
+      id: 14
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '15':
+      id: 15
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '16':
+      id: 16
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '18':
+      id: 18
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '19':
+      id: 19
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '20':
+      id: 20
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '21':
+      id: 21
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '22':
+      id: 22
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '23':
+      id: 23
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '24':
+      id: 24
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '25':
+      id: 25
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '26':
+      id: 26
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '27':
+      id: 27
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '29':
+      id: 29
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '30':
+      id: 30
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '31':
+      id: 31
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '32':
+      id: 32
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '34':
+      id: 34
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '46':
+      id: 46
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '50':
+      id: 50
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 3
+          - 8
+          - 9
+          - 12
+          - 13
+          - 17
+          - 28
+          - 33
+          - 42
+          - 43
+          - 48
+          - 49
+    '51':
+      id: 51
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
+    '53':
+      id: 53
+      crossFilters:
+        scope:
+          rootPath:
+          - ROOT_ID
+          excluded:
+          - 8
+          - 9
+          - 13
+          - 43
+          - 49
   global_chart_configuration:
     scope:
       rootPath:
